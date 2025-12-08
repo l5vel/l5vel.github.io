@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-bots | Robotic Support for Everyday Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal-50: #f0fdfa;
+            --teal-100: #ccfbf1;
+            --teal-400: #2dd4bf;
+            --teal-500: #14b8a6;
+            --teal-600: #0d9488;
+            --teal-700: #0f766e;
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --slate-950: #020617;
+            --amber-500: #f59e0b;
+            --blue-500: #3b82f6;
+            --violet-500: #8b5cf6;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--slate-50);
+            color: var(--slate-800);
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ============================================
+           HERO WITH VIDEO BACKGROUND
+           ============================================ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-video-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(15, 23, 42, 0.5) 0%,
+                rgba(15, 23, 42, 0.6) 50%,
+                rgba(15, 23, 42, 0.8) 100%
+            );
+            z-index: 1;
+        }
+
+        .hero-fallback {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(20, 184, 166, 0.2);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            border-radius: 100px;
+            margin-bottom: 1.5rem;
+            color: var(--teal-100);
+            font-size: 0.875rem;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: white;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--teal-500), var(--teal-600));
+            color: white;
+            box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(20, 184, 166, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
+        .scroll-indicator a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.2s;
+            text-align: center;
+        }
+
+        .scroll-indicator a:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .scroll-arrow {
+            width: 24px;
+            height: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(6px); }
+            60% { transform: translateY(3px); }
+        }
+
+        /* ============================================
+           VISION SECTION (Unreal Renders)
+           ============================================ */
+        .vision-section {
+            background: var(--slate-950);
+            padding: 6rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .vision-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .vision-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .vision-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--teal-400);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.75rem;
+        }
+
+        .vision-title {
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .vision-subtitle {
+            font-size: 1.0625rem;
+            color: var(--slate-400);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        /* First two cards span larger */
+        .vision-grid .vision-card:nth-child(1) {
+            grid-column: span 2;
+        }
+
+        .vision-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--slate-900);
+            border: 1px solid var(--slate-800);
+            transition: all 0.4s ease;
+        }
+
+        .vision-card:hover {
+            border-color: var(--slate-700);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .vision-card-video {
+            aspect-ratio: 16/9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vision-card-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--slate-800), var(--slate-900));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vision-play-btn {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .vision-card:hover .vision-play-btn {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .vision-play-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            margin-left: 4px;
+        }
+
+        .vision-card-content {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .vision-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .vision-card-desc {
+            font-size: 0.8125rem;
+            color: var(--slate-500);
+        }
+
+        .vision-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.3rem 0.625rem;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            color: var(--teal-400);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .vision-footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            color: var(--slate-500);
+            font-size: 0.875rem;
+        }
+
+        .vision-footer span {
+            color: var(--slate-600);
+        }
+
+        /* ============================================
+           VERTICALS SECTION
+           ============================================ */
+        .page-content {
+            position: relative;
+            background: var(--slate-50);
+        }
+
+        .bg-gradient {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(20, 184, 166, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .content-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .verticals {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--teal-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 700;
+            color: var(--slate-900);
+        }
+
+        .verticals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .vertical-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--slate-200);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vertical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .vertical-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            border-color: transparent;
+        }
+
+        .vertical-card:hover::before {
+            opacity: 1;
+        }
+
+        .vertical-card.home::before { background: linear-gradient(90deg, var(--teal-500), var(--teal-400)); }
+        .vertical-card.warehouse::before { background: linear-gradient(90deg, var(--amber-500), #fbbf24); }
+        .vertical-card.industrial::before { background: linear-gradient(90deg, var(--blue-500), #60a5fa); }
+
+        .vertical-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .vertical-card.home .vertical-icon { background: var(--teal-50); color: var(--teal-600); }
+        .vertical-card.warehouse .vertical-icon { background: #fef3c7; color: #d97706; }
+        .vertical-card.industrial .vertical-icon { background: #dbeafe; color: var(--blue-500); }
+
+        .vertical-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .vertical-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--slate-900);
+            margin-bottom: 0.75rem;
+        }
+
+        .vertical-description {
+            color: var(--slate-600);
+            font-size: 0.9375rem;
+            line-height: 1.7;
+            margin-bottom: 1.25rem;
+        }
+
+        .vertical-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .feature-tag {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+            border-radius: 100px;
+            background: var(--slate-100);
+            color: var(--slate-600);
+        }
+
+        /* ============================================
+           PROGRESS SECTION (Real Footage)
+           ============================================ */
+        .progress-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(180deg, var(--slate-50) 0%, white 100%);
+        }
+
+        .progress-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-header .section-label {
+            color: var(--violet-500);
+        }
+
+        .progress-subtitle {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .progress-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--slate-500);
+            background: var(--slate-100);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+        }
+
+        .progress-tag svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--slate-200);
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .video-thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--slate-100), var(--slate-200));
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn {
+            width: 56px;
+            height: 56px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover .play-btn {
+            transform: scale(1.1);
+        }
+
+        .play-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--teal-600);
+            margin-left: 3px;
+        }
+
+        .video-number {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            color: var(--slate-700);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-tags {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .video-tag {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-tag.home { color: var(--teal-600); }
+        .video-tag.warehouse { color: #d97706; }
+        .video-tag.industrial { color: var(--blue-500); }
+        .video-tag.all { color: var(--violet-500); }
+
+        .video-content {
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+
+        .video-title {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: var(--slate-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-description {
+            font-size: 0.875rem;
+            color: var(--slate-500);
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           PHILOSOPHY SECTION
+           ============================================ */
+        .philosophy {
+            padding: 5rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .philosophy-quote {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 600;
+            color: var(--slate-800);
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+
+        .philosophy-description {
+            color: var(--slate-500);
+            font-size: 1.0625rem;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--slate-200);
+            text-align: center;
+            background: white;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--slate-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-text {
+            color: var(--slate-500);
+            font-size: 0.875rem;
+        }
+
+        .footer-text a {
+            color: var(--teal-600);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-contact {
+            margin-top: 1rem;
+            color: var(--slate-500);
+            font-size: 0.875rem;
+        }
+
+        .footer-contact a {
+            color: var(--slate-700);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 900px) {
+            .vision-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .vision-grid .vision-card:nth-child(1) {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .hero-content {
+                padding: 1.5rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                max-width: 280px;
+            }
+
+            .vision-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .vision-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vision-grid .vision-card:nth-child(1) {
+                grid-column: span 1;
+            }
+
+            .verticals, .progress-section, .philosophy {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .progress-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero">
+        <nav>
+            <a href="https://l5vel.com" class="logo">
+                <div class="logo-mark">L5</div>
+                L5VEL
+            </a>
+
+        </nav>
+
+        <div class="hero-fallback"></div>
+
+        <!-- 
+            =============================================
+            HERO VIDEO BACKGROUND
+            =============================================
+            Replace "hero_video.mp4" with your best cinematic Unreal Engine render.
+            Suggestion: Use "crossing hallway" or "pouring tea" render.
+            
+            Video Requirements:
+            - MP4 format, H.264 codec
+            - 10-30 second seamless loop
+            - Under 10MB for fast loading
+            - Resolution: 1920x1080 or higher
+            - Should be visually stunning but subtle enough for text overlay
+        -->
+        <div class="hero-video-container">
+            <video 
+                class="hero-video"
+                autoplay 
+                muted 
+                loop 
+                playsinline
+                preload="metadata"
+                poster="hero_poster.jpg"
+            >
+                <source src="hero_video.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                Now in Development
+            </div>
+            <h1>Robotic support for everyday tasks—anywhere</h1>
+            <p class="hero-description">
+                S-bots bring intelligent mobility and manipulation to the spaces that matter most. 
+                At home, in warehouses, or maintaining critical infrastructure.
+            </p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
+                    Get Early Access
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#progress" class="btn btn-secondary">See Real Progress</a>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <a href="#vision">
+                <span>Scroll to explore</span>
+                <svg class="scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================
+         VISION SECTION (Unreal Renders)
+         ============================================ -->
+    <section class="vision-section" id="vision">
+        <div class="vision-container">
+            <div class="vision-header">
+                <p class="vision-label">The Vision</p>
+                <h2 class="vision-title">Where We're Going</h2>
+                <p class="vision-subtitle">A glimpse of S-bot's capabilities, rendered in Unreal Engine</p>
+            </div>
+
+            <!-- 
+                =============================================
+                UNREAL RENDER VIDEOS
+                =============================================
+                Replace each "YOUR_VIDEO_*.mp4" with your actual render URLs.
+                Videos should autoplay muted on hover (JS) or play inline.
+            -->
+            <div class="vision-grid">
+                <!-- Card 1: Pouring Tea (featured, larger) -->
+                <article class="vision-card">
+                    <div class="vision-card-video">
+                        <!-- 
+                            =============================================
+                            UNREAL VIDEO 1: Pouring Tea
+                            =============================================
+                            Replace "unreal_video1.mp4" with your actual Unreal Engine render
+                            This is a featured card (larger size)
+                            Recommended: High-quality render showing precision manipulation
+                        -->
+                        <video 
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            muted 
+                            loop 
+                            playsinline
+                            preload="none"
+                            poster="unreal_video1_poster.jpg"
+                        >
+                            <source src="unreal_video1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="vision-badge">Vision</span>
+                    </div>
+                    <div class="vision-card-content">
+                        <h3 class="vision-card-title">Pouring Tea</h3>
+                        <p class="vision-card-desc">Precision manipulation for delicate tasks</p>
+                    </div>
+                </article>
+
+                <!-- Card 2: Vacuuming -->
+                <article class="vision-card">
+                    <div class="vision-card-video">
+                        <!-- 
+                            =============================================
+                            UNREAL VIDEO 2: Vacuuming
+                            =============================================
+                            Replace "unreal_video2.mp4" with your actual Unreal Engine render
+                            Recommended: Render showing autonomous floor cleaning
+                        -->
+                        <video 
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            muted 
+                            loop 
+                            playsinline
+                            preload="none"
+                            poster="unreal_video2_poster.jpg"
+                        >
+                            <source src="unreal_video2.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="vision-badge">Vision</span>
+                    </div>
+                    <div class="vision-card-content">
+                        <h3 class="vision-card-title">Vacuuming</h3>
+                        <p class="vision-card-desc">Autonomous floor cleaning</p>
+                    </div>
+                </article>
+
+                <!-- Card 3: Crossing Hallway -->
+                <article class="vision-card">
+                    <div class="vision-card-video">
+                        <!-- 
+                            =============================================
+                            UNREAL VIDEO 3: Crossing Hallway
+                            =============================================
+                            Replace "unreal_video3.mp4" with your actual Unreal Engine render
+                            Recommended: Render showing smooth navigation through spaces
+                        -->
+                        <video 
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            muted 
+                            loop 
+                            playsinline
+                            preload="none"
+                            poster="unreal_video3_poster.jpg"
+                        >
+                            <source src="unreal_video3.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="vision-badge">Vision</span>
+                    </div>
+                    <div class="vision-card-content">
+                        <h3 class="vision-card-title">Crossing Hallway</h3>
+                        <p class="vision-card-desc">Smooth navigation through spaces</p>
+                    </div>
+                </article>
+
+                <!-- Card 4: Moving Chair -->
+                <article class="vision-card">
+                    <div class="vision-card-video">
+                        <!-- 
+                            =============================================
+                            UNREAL VIDEO 4: Moving a Chair
+                            =============================================
+                            Replace "unreal_video4.mp4" with your actual Unreal Engine render
+                            Recommended: Render showing dual-arm coordination for heavy objects
+                        -->
+                        <video 
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            muted 
+                            loop 
+                            playsinline
+                            preload="none"
+                            poster="unreal_video4_poster.jpg"
+                        >
+                            <source src="unreal_video4.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="vision-badge">Vision</span>
+                    </div>
+                    <div class="vision-card-content">
+                        <h3 class="vision-card-title">Moving a Chair</h3>
+                        <p class="vision-card-desc">Dual-arm coordination for heavy objects</p>
+                    </div>
+                </article>
+
+                <!-- Card 5: Cleaning -->
+                <article class="vision-card">
+                    <div class="vision-card-video">
+                        <!-- 
+                            =============================================
+                            UNREAL VIDEO 5: Cleaning
+                            =============================================
+                            Replace "unreal_video5.mp4" with your actual Unreal Engine render
+                            Recommended: Render showing surface cleaning and tidying
+                        -->
+                        <video 
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            muted 
+                            loop 
+                            playsinline
+                            preload="none"
+                            poster="unreal_video5_poster.jpg"
+                        >
+                            <source src="unreal_video5.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <span class="vision-badge">Vision</span>
+                    </div>
+                    <div class="vision-card-content">
+                        <h3 class="vision-card-title">Cleaning</h3>
+                        <p class="vision-card-desc">Surface cleaning and tidying</p>
+                    </div>
+                </article>
+            </div>
+
+            <p class="vision-footer">
+                Rendered in Unreal Engine <span>•</span> 2-arm mobile manipulator
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         MAIN PAGE CONTENT
+         ============================================ -->
+    <div class="page-content">
+        <div class="bg-gradient"></div>
+        <div class="content-inner">
+
+            <!-- Verticals Section -->
+            <section class="verticals">
+                <div class="section-header">
+                    <p class="section-label">Where S-bots Work</p>
+                    <h2 class="section-title">One platform, built for real environments</h2>
+                </div>
+
+                <div class="verticals-grid">
+                    <div class="vertical-card home">
+                        <div class="vertical-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9,22 9,12 15,12 15,22"/>
+                            </svg>
+                        </div>
+                        <h3 class="vertical-title">Home Care</h3>
+                        <p class="vertical-description">
+                            A supportive companion for elderly individuals and people with disabilities. 
+                            S-bot helps maintain independence—picking up dropped items, assisting with light cleaning, 
+                            and adapting to your unique home and needs.
+                        </p>
+                        <div class="vertical-features">
+                            <span class="feature-tag">Independence</span>
+                            <span class="feature-tag">Companion</span>
+                            <span class="feature-tag">Adaptive</span>
+                        </div>
+                    </div>
+
+                    <div class="vertical-card warehouse">
+                        <div class="vertical-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="6" width="22" height="15" rx="2"/>
+                                <path d="M1 10h22"/>
+                                <path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </div>
+                        <h3 class="vertical-title">Warehouse & Logistics</h3>
+                        <p class="vertical-description">
+                            Predictable mobile manipulation for demanding operations. Simple models and 
+                            KISS engineering mean reliable performance that scales—whether moving inventory, 
+                            organizing shelves, or handling varied objects.
+                        </p>
+                        <div class="vertical-features">
+                            <span class="feature-tag">Reliable</span>
+                            <span class="feature-tag">Scalable</span>
+                            <span class="feature-tag">KISS Design</span>
+                        </div>
+                    </div>
+
+                    <div class="vertical-card industrial">
+                        <div class="vertical-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 20h20"/>
+                                <path d="M5 20V8l5-4v16"/>
+                                <path d="M10 20V4l9 4v12"/>
+                                <path d="M14 12h.01"/>
+                                <path d="M14 16h.01"/>
+                            </svg>
+                        </div>
+                        <h3 class="vertical-title">Infrastructure & Industrial</h3>
+                        <p class="vertical-description">
+                            Heavy-duty cleaning and maintenance at scale. From dam gates to lock systems, 
+                            S-bots operate in environments that are hazardous or difficult for humans—
+                            keeping critical infrastructure safe and maintained.
+                        </p>
+                        <div class="vertical-features">
+                            <span class="feature-tag">Heavy-duty</span>
+                            <span class="feature-tag">Safety</span>
+                            <span class="feature-tag">Scale</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section (Real Footage) -->
+            <section class="progress-section" id="progress">
+                <div class="progress-container">
+                    <div class="section-header progress-header">
+                        <p class="section-label">The Progress</p>
+                        <h2 class="section-title">Real robots, real learning</h2>
+                    </div>
+
+                    <div class="progress-subtitle">
+                        <span class="progress-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            Live development footage
+                        </span>
+                    </div>
+
+                    <!-- 
+                        =============================================
+                        REAL FOOTAGE VIDEOS
+                        =============================================
+                        Replace each placeholder with your LinkedIn video embeds.
+                    -->
+                    <div class="progress-grid">
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 1: Finding What You Need
+                                    =============================================
+                                    Replace "video_1.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_1_poster.jpg"
+                                >
+                                    <source src="video_1.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">1</div>
+                                <div class="video-tags">
+                                    <span class="video-tag all">All Environments</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Finding What You Need</h3>
+                                <p class="video-description">
+                                    Objects move. S-bot finds and retrieves items even when they've been relocated—using generalized visual search combined with intelligent grasping.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 2: Gentle, Intelligent Handling
+                                    =============================================
+                                    Replace "video_2.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_2_poster.jpg"
+                                >
+                                    <source src="video_2.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">2</div>
+                                <div class="video-tags">
+                                    <span class="video-tag home">Home</span>
+                                    <span class="video-tag warehouse">Warehouse</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Gentle, Intelligent Handling</h3>
+                                <p class="video-description">
+                                    Context-aware grasping that adapts to different objects, clutter, and constraints. The same care whether it's a coffee cup or warehouse inventory.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 3: Moving Through Your Space
+                                    =============================================
+                                    Replace "video_3.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_3_poster.jpg"
+                                >
+                                    <source src="video_3.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">3</div>
+                                <div class="video-tags">
+                                    <span class="video-tag home">Home</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Moving Through Your Space</h3>
+                                <p class="video-description">
+                                    Now opening doors autonomously. Mobility plus manipulation working together—the building blocks for navigating real home environments.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 4: Real Attempts, Real Failures
+                                    =============================================
+                                    Replace "video_4.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_4_poster.jpg"
+                                >
+                                    <source src="video_4.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">4</div>
+                                <div class="video-tags">
+                                    <span class="video-tag all">Our Philosophy</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Real Attempts, Real Failures</h3>
+                                <p class="video-description">
+                                    Most robotics videos show only perfect runs. We share our bloopers because real progress means learning from every attempt.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 5: Reliable By Design
+                                    =============================================
+                                    Replace "video_5.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_5_poster.jpg"
+                                >
+                                    <source src="video_5.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">5</div>
+                                <div class="video-tags">
+                                    <span class="video-tag warehouse">Warehouse</span>
+                                    <span class="video-tag industrial">Industrial</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Reliable By Design</h3>
+                                <p class="video-description">
+                                    Simple models with careful engineering. KISS principles deliver predictable performance—whether in a lab, home, or warehouse.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="video-card">
+                            <div class="video-thumbnail">
+                                <!-- 
+                                    =============================================
+                                    VIDEO 6: One System, Many Tasks
+                                    =============================================
+                                    Replace "video_6.mp4" with your actual video file
+                                    Supported formats: MP4, WebM
+                                    Recommended: MP4 with H.264 codec
+                                -->
+                                <video 
+                                    width="100%" 
+                                    height="100%" 
+                                    controls
+                                    preload="none"
+                                    poster="video_6_poster.jpg"
+                                >
+                                    <source src="video_6.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="video-number">6</div>
+                                <div class="video-tags">
+                                    <span class="video-tag home">Home</span>
+                                    <span class="video-tag warehouse">Warehouse</span>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">One System, Many Tasks</h3>
+                                <p class="video-description">
+                                    A single imitation-trained system handling household and warehouse tasks—no task-specific code. Small models, robust performance.
+                                </p>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Philosophy Section -->
+            <section class="philosophy">
+                <p class="philosophy-quote">
+                    "Simple models with good engineering can go far."
+                </p>
+                <p class="philosophy-description">
+                    We believe in the KISS philosophy. Carefully designed architecture over complexity. 
+                    Real progress over highlight reels. Technology that serves humanity with compassion and intelligence.
+                </p>
+            </section>
+            <!-- Footer -->
+            <footer>
+                <div class="footer-content">
+                    <p class="footer-brand">L5VEL</p>
+                    <p class="footer-contact">
+                        Get early access: <a href="mailto:info@l5vel.com" id="contact">info@l5vel.com</a>
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
