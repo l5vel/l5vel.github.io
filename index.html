@@ -325,18 +325,26 @@
             margin: 0 auto;
         }
 
+        /* UPDATED GRID LOGIC: 
+           Using 6 columns allows us to create a symmetrical layout where
+           the top 2 cards take 50% width (span 3) and the bottom 3 cards
+           take 33% width (span 2).
+        */
         .vision-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 1.25rem;
         }
 
-        /* First two cards span larger */
-        .vision-grid .vision-card:nth-child(1) {
-            grid-column: span 2;
+        /* Target First AND Second cards to be large (50% width each) */
+        .vision-grid .vision-card:nth-child(1),
+        .vision-grid .vision-card:nth-child(2) {
+            grid-column: span 3;
         }
 
         .vision-card {
+            /* Default: span 2 columns (equates to 1/3 width in a 6-col grid) */
+            grid-column: span 2;
             position: relative;
             border-radius: 16px;
             overflow: hidden;
@@ -621,7 +629,7 @@
 
         .progress-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
         }
 
@@ -645,6 +653,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .play-btn {
@@ -818,10 +833,24 @@
            ============================================ */
         @media (max-width: 900px) {
             .vision-grid {
-                grid-template-columns: 1fr 1fr;
+                /* On tablet, switch to 2 columns */
+                grid-template-columns: repeat(2, 1fr);
             }
-            .vision-grid .vision-card:nth-child(1) {
+            
+            /* Ensure the two main cards stay large (full width or equal split) */
+            /* Let's make them span 2 (full width) so they are stacked and huge on tablet */
+            .vision-grid .vision-card:nth-child(1),
+            .vision-grid .vision-card:nth-child(2) {
                 grid-column: span 2;
+            }
+
+            /* Regular cards span 1 (half width) */
+            .vision-card {
+                grid-column: span 1;
+            }
+            
+            .progress-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -853,7 +882,10 @@
                 grid-template-columns: 1fr;
             }
 
-            .vision-grid .vision-card:nth-child(1) {
+            /* All cards stack on mobile */
+            .vision-grid .vision-card:nth-child(1),
+            .vision-grid .vision-card:nth-child(2),
+            .vision-card {
                 grid-column: span 1;
             }
 
@@ -870,9 +902,6 @@
 </head>
 <body>
 
-    <!-- ============================================
-         HERO SECTION
-         ============================================ -->
     <section class="hero">
         <nav>
             <a href="https://l5vel.com" class="logo">
@@ -884,20 +913,6 @@
 
         <div class="hero-fallback"></div>
 
-        <!-- 
-            =============================================
-            HERO VIDEO BACKGROUND
-            =============================================
-            Replace "hero_video.mp4" with your best cinematic Unreal Engine render.
-            Suggestion: Use "crossing hallway" or "pouring tea" render.
-            
-            Video Requirements:
-            - MP4 format, H.264 codec
-            - 10-30 second seamless loop
-            - Under 10MB for fast loading
-            - Resolution: 1920x1080 or higher
-            - Should be visually stunning but subtle enough for text overlay
-        -->
         <div class="hero-video-container">
             <video 
                 class="hero-video"
@@ -948,9 +963,6 @@
         </div>
     </section>
 
-    <!-- ============================================
-         VISION SECTION (Unreal Renders)
-         ============================================ -->
     <section class="vision-section" id="vision">
         <div class="vision-container">
             <div class="vision-header">
@@ -959,25 +971,9 @@
                 <p class="vision-subtitle">A glimpse of S-bot's capabilities, rendered in Unreal Engine</p>
             </div>
 
-            <!-- 
-                =============================================
-                UNREAL RENDER VIDEOS
-                =============================================
-                Replace each "YOUR_VIDEO_*.mp4" with your actual render URLs.
-                Videos should autoplay muted on hover (JS) or play inline.
-            -->
             <div class="vision-grid">
-                <!-- Card 1: Pouring Tea (featured, larger) -->
                 <article class="vision-card">
                     <div class="vision-card-video">
-                        <!-- 
-                            =============================================
-                            UNREAL VIDEO 1: Pouring Tea
-                            =============================================
-                            Replace "unreal_video1.mp4" with your actual Unreal Engine render
-                            This is a featured card (larger size)
-                            Recommended: High-quality render showing precision manipulation
-                        -->
                         <video 
                             width="100%" 
                             height="100%" 
@@ -999,16 +995,8 @@
                     </div>
                 </article>
 
-                <!-- Card 2: Vacuuming -->
                 <article class="vision-card">
                     <div class="vision-card-video">
-                        <!-- 
-                            =============================================
-                            UNREAL VIDEO 2: Vacuuming
-                            =============================================
-                            Replace "unreal_video2.mp4" with your actual Unreal Engine render
-                            Recommended: Render showing autonomous floor cleaning
-                        -->
                         <video 
                             width="100%" 
                             height="100%" 
@@ -1030,16 +1018,8 @@
                     </div>
                 </article>
 
-                <!-- Card 3: Crossing Hallway -->
                 <article class="vision-card">
                     <div class="vision-card-video">
-                        <!-- 
-                            =============================================
-                            UNREAL VIDEO 3: Crossing Hallway
-                            =============================================
-                            Replace "unreal_video3.mp4" with your actual Unreal Engine render
-                            Recommended: Render showing smooth navigation through spaces
-                        -->
                         <video 
                             width="100%" 
                             height="100%" 
@@ -1061,16 +1041,8 @@
                     </div>
                 </article>
 
-                <!-- Card 4: Moving Chair -->
                 <article class="vision-card">
                     <div class="vision-card-video">
-                        <!-- 
-                            =============================================
-                            UNREAL VIDEO 4: Moving a Chair
-                            =============================================
-                            Replace "unreal_video4.mp4" with your actual Unreal Engine render
-                            Recommended: Render showing dual-arm coordination for heavy objects
-                        -->
                         <video 
                             width="100%" 
                             height="100%" 
@@ -1092,16 +1064,8 @@
                     </div>
                 </article>
 
-                <!-- Card 5: Cleaning -->
                 <article class="vision-card">
                     <div class="vision-card-video">
-                        <!-- 
-                            =============================================
-                            UNREAL VIDEO 5: Cleaning
-                            =============================================
-                            Replace "unreal_video5.mp4" with your actual Unreal Engine render
-                            Recommended: Render showing surface cleaning and tidying
-                        -->
                         <video 
                             width="100%" 
                             height="100%" 
@@ -1130,14 +1094,10 @@
         </div>
     </section>
 
-    <!-- ============================================
-         MAIN PAGE CONTENT
-         ============================================ -->
     <div class="page-content">
         <div class="bg-gradient"></div>
         <div class="content-inner">
 
-            <!-- Verticals Section -->
             <section class="verticals">
                 <div class="section-header">
                     <p class="section-label">Where S-bots Work</p>
@@ -1211,7 +1171,6 @@
                 </div>
             </section>
 
-            <!-- Progress Section (Real Footage) -->
             <section class="progress-section" id="progress">
                 <div class="progress-container">
                     <div class="section-header progress-header">
@@ -1229,23 +1188,9 @@
                         </span>
                     </div>
 
-                    <!-- 
-                        =============================================
-                        REAL FOOTAGE VIDEOS
-                        =============================================
-                        Replace each placeholder with your LinkedIn video embeds.
-                    -->
                     <div class="progress-grid">
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 1: Finding What You Need
-                                    =============================================
-                                    Replace "video_1.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1271,14 +1216,6 @@
 
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 2: Gentle, Intelligent Handling
-                                    =============================================
-                                    Replace "video_2.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1305,14 +1242,6 @@
 
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 3: Moving Through Your Space
-                                    =============================================
-                                    Replace "video_3.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1338,14 +1267,6 @@
 
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 4: Real Attempts, Real Failures
-                                    =============================================
-                                    Replace "video_4.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1371,14 +1292,6 @@
 
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 5: Reliable By Design
-                                    =============================================
-                                    Replace "video_5.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1405,14 +1318,6 @@
 
                         <article class="video-card">
                             <div class="video-thumbnail">
-                                <!-- 
-                                    =============================================
-                                    VIDEO 6: One System, Many Tasks
-                                    =============================================
-                                    Replace "video_6.mp4" with your actual video file
-                                    Supported formats: MP4, WebM
-                                    Recommended: MP4 with H.264 codec
-                                -->
                                 <video 
                                     width="100%" 
                                     height="100%" 
@@ -1440,7 +1345,6 @@
                 </div>
             </section>
 
-            <!-- Philosophy Section -->
             <section class="philosophy">
                 <p class="philosophy-quote">
                     "Simple models with good engineering can go far."
@@ -1450,15 +1354,18 @@
                     Real progress over highlight reels. Technology that serves humanity with compassion and intelligence.
                 </p>
             </section>
-            <!-- Footer -->
             <footer>
                 <div class="footer-content">
                     <p class="footer-brand">L5VEL</p>
                     <p class="footer-contact">
-                        Get early access: <a href="mailto:info@l5vel.com" id="contact">info@l5vel.com</a>
+                        Get early access: <a href="mailto:support@l5vel.com" id="contact">support@l5vel.com</a>
+                    </p>
+                    <p class="footer-text">
+                        &copy; 2024 L5VEL. All rights reserved.
                     </p>
                 </div>
             </footer>
         </div>
-    </body>
+    </div>
+</body>
 </html>
