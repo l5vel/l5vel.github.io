@@ -25,7 +25,10 @@
     }
 
     /* Only one clip plays at a time — six autoplaying cards is chaos. */
-    var clips = document.querySelectorAll('.video-thumbnail video, .vision-card-video video');
+    var clips = document.querySelectorAll(
+        '.video-thumbnail video, .vision-card-video video,' +
+        '.prod-hero-media video, .prod-video-media video'
+    );
 
     Array.prototype.forEach.call(clips, function (clip) {
         clip.addEventListener('play', function () {

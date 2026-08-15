@@ -485,6 +485,117 @@ video {
 }
 
 /* ============================================
+   PRODUCTS — overview of the two platforms
+   ============================================ */
+.products {
+    padding: 5rem 2rem 1rem;
+    max-width: var(--container);
+    margin: 0 auto;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.product-media {
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: var(--slate-900);
+}
+
+.product-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-status {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.625rem;
+    border-radius: 6px;
+    background: var(--slate-100);
+    color: var(--slate-500);
+    margin-bottom: 0.875rem;
+}
+
+.product-status--tested {
+    background: var(--teal-50);
+    color: var(--teal-700);
+}
+
+.product-name {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-bottom: 0.625rem;
+}
+
+.product-name a {
+    color: var(--slate-900);
+    text-decoration: none;
+}
+
+/* Let the whole card be the click target while keeping one real link. */
+.product-name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.product-card {
+    position: relative;
+}
+
+.product-name a:hover {
+    color: var(--teal-700);
+}
+
+.product-text {
+    color: var(--slate-600);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+}
+
+.product-link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--teal-600);
+}
+
+/* ============================================
    PROGRESS — real footage, shot vertically
    ============================================ */
 .progress-section {
@@ -841,6 +952,331 @@ footer {
 
 .footer-text a:hover {
     text-decoration: underline;
+}
+
+/* ============================================
+   PRODUCT PAGES (A-MPEP)
+   ============================================ */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Product pages have no video hero, so the nav needs a background from
+   the first paint rather than waiting for the scroll observer. */
+.site-nav.is-solid {
+    background: rgba(2, 6, 23, 0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.nav-link[aria-current="page"] {
+    color: white;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.prod-hero {
+    background: linear-gradient(160deg, var(--slate-900) 0%, var(--slate-950) 100%);
+    padding: calc(var(--nav-h) + 4rem) 2rem 4rem;
+}
+
+.prod-hero-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.prod-eyebrow {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--teal-400);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+}
+
+.prod-title {
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    font-weight: 700;
+    color: white;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+}
+
+.prod-lede {
+    font-size: clamp(1rem, 2.2vw, 1.1875rem);
+    color: var(--slate-400);
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+}
+
+.prod-hero-media {
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    border: 1px solid var(--slate-800);
+    background: var(--slate-950);
+    aspect-ratio: 16 / 9;
+}
+
+.prod-hero-media video,
+.prod-hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.prod-caption {
+    margin-top: 0.875rem;
+    font-size: 0.8125rem;
+    color: var(--slate-500);
+}
+
+/* ---- proof / headline numbers ---- */
+.proof {
+    background: var(--slate-950);
+    padding: 5rem 2rem;
+    border-top: 1px solid var(--slate-800);
+}
+
+.proof-inner {
+    max-width: var(--container);
+    margin: 0 auto;
+    text-align: center;
+}
+
+.proof-label {
+    color: var(--teal-400);
+}
+
+.proof-title {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.proof-sub {
+    color: var(--slate-400);
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    font-size: 1rem;
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.25rem;
+    text-align: left;
+}
+
+.stat {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+}
+
+.stat-value {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--teal-400);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--slate-400);
+    line-height: 1.5;
+}
+
+.proof-source {
+    margin-top: 2rem;
+    font-size: 0.8125rem;
+    color: var(--slate-600);
+}
+
+.proof-source cite {
+    font-style: italic;
+}
+
+/* ---- demonstrated capability ---- */
+.capability {
+    padding: 5rem 2rem 2rem;
+    max-width: var(--container);
+    margin: 0 auto;
+}
+
+.cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.cap-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-left: 3px solid var(--teal-500);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.cap-title {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--slate-900);
+    margin-bottom: 0.5rem;
+}
+
+.cap-text {
+    font-size: 0.9375rem;
+    color: var(--slate-600);
+    line-height: 1.65;
+}
+
+/* ---- product video grid (16:9, unlike the vertical S-bot clips) ---- */
+.prod-videos {
+    padding: 4rem 2rem;
+    max-width: var(--container);
+    margin: 0 auto;
+}
+
+.prod-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.prod-video-media {
+    aspect-ratio: 16 / 9;
+    background: var(--slate-900);
+}
+
+.prod-video-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* ---- applique ---- */
+.applique {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+.applique-media img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--slate-200);
+}
+
+.applique-text {
+    color: var(--slate-600);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-top: 1rem;
+}
+
+.applique-list {
+    margin: 1.5rem 0 0 1.125rem;
+    color: var(--slate-600);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+}
+
+.applique-list li {
+    margin-bottom: 0.5rem;
+}
+
+.applique-list li::marker {
+    color: var(--teal-500);
+}
+
+/* ---- specifications ---- */
+.specs {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.spec-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-card);
+    background: white;
+}
+
+.spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+}
+
+.spec-table th,
+.spec-table td {
+    text-align: left;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--slate-100);
+}
+
+.spec-table tr:last-child th,
+.spec-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.spec-table th {
+    font-weight: 500;
+    color: var(--slate-500);
+    width: 55%;
+}
+
+.spec-table td {
+    font-weight: 600;
+    color: var(--slate-900);
+}
+
+.spec-note {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--slate-500);
+}
+
+@media (max-width: 860px) {
+    .applique {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .prod-hero,
+    .proof {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .capability,
+    .prod-videos,
+    .applique,
+    .specs {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .spec-table th {
+        width: 50%;
+    }
 }
 
 /* ============================================

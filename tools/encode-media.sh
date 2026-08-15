@@ -27,17 +27,23 @@ case "$section" in
         poster="$repo/assets/posters/hero.jpg"
         crf=26
         ;;
-    vision|progress)
+    [a-z0-9-]*)
         [ -n "$slug" ] || { echo "a slug is required for $section" >&2; exit 1; }
         out="$repo/assets/video/$section/$slug.mp4"
         poster="$repo/assets/posters/$section/$slug.jpg"
-        [ "$section" = vision ] && crf=26 || crf=27
+        # Real footage carries more noise and tolerates a higher CRF than
+        # a clean synthetic render.
+        [ "$section" = progress ] && crf=27 || crf=26
         ;;
     *)
-        echo "section must be one of: hero, vision, progress" >&2
+        echo "section must be 'hero' or a lowercase slug (vision, progress, mpep, ...)" >&2
         exit 1
         ;;
 esac
+
+# Grainy handheld footage compresses poorly at the default; override with
+# e.g. CRF=30 to trade a little detail for a much smaller file.
+crf=${CRF:-$crf}
 
 mkdir -p "$(dirname "$out")" "$(dirname "$poster")"
 

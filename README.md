@@ -7,22 +7,44 @@ is in the repo is what ships.
 ## Layout
 
 ```
-index.html              the whole page
+index.html              home page (company overview + product cards)
+sbot/index.html         S-bot product page   -> l5vel.com/sbot/
+mpep/index.html         A-MPEP product page  -> l5vel.com/mpep/
 404.html                not-found page
 assets/
-  css/site.css          all styles
+  css/site.css          all styles, for every page
   js/site.js            nav scroll state, video coordination (progressive enhancement)
   video/hero.mp4        hero background loop (silent)
   video/vision/         Unreal Engine concept renders, 16:9, silent
-  video/progress/       real development footage, 9:16, with audio
+  video/progress/       real S-bot development footage, 9:16, with audio
+  video/mpep/           A-MPEP test footage, 16:9, silent
   posters/              poster frame per clip, mirroring the video folders
+  img/                  still photography
 tools/encode-media.sh   re-encodes source media for the web
 ```
 
-Page order is: hero → platform (`#verticals`) → progress (`#progress`) →
-vision (`#vision`) → philosophy → contact (`#contact`). Real footage comes
-before the concept renders on purpose — it matches what the philosophy
-section claims about showing real progress over highlight reels.
+The home page is a company overview: hero → products (`#products`) →
+philosophy → contact (`#contact`). Each product then has its own page.
+
+The S-bot page runs hero → where S-bots work (`#verticals`) → development
+footage (`#progress`) → concept renders (`#vision`) → contact. Real footage
+comes before the renders on purpose — it matches what the philosophy section
+claims about showing real progress over highlight reels.
+
+Both product pages share the `.prod-hero` / `.prod-*` styles in `site.css`,
+so a third product page starts by copying either one.
+
+## The A-MPEP page
+
+`mpep/index.html` supports a Government proposal, so every number on it is
+traceable to the independent BCDC Innovation Proving Ground *MPEP Customer
+Test Report* (18 April 2023) covering the 3–10 March 2023 test, except the
+host-platform specification table, which is labelled as supplier ratings.
+
+**Do not add projected or planned capability to this page.** Work that is
+proposed rather than demonstrated — GPS-denied navigation, night operation,
+load ID, multi-vehicle teaming, Army logistics-system integration — is
+deliberately excluded. Cite the report before adding a figure.
 
 ## Working on it
 
