@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+._*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Working files — keep source media out of the deployed site
+/raw/
+*.mov
+*.MOV
