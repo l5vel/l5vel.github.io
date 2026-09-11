@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>sBot-Datasets &mdash; robot demonstrations, step by step | L5VEL</title>
+    <meta name="description" content="Explore 1,499 robot demonstrations with video, actions and timed subtask annotations. Use sBot-Datasets and lerobot-align to inspect actions and annotate your own recordings.">
+    <link rel="canonical" href="https://l5vel.com/blog/sbot-datasets/">
+    <meta name="theme-color" content="#0f172a">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://l5vel.com/blog/sbot-datasets/">
+    <meta property="og:title" content="sBot-Datasets &mdash; robot demonstrations, step by step">
+    <meta property="og:description" content="Explore 1,499 robot demonstrations with video, actions and timed subtask annotations. Use sBot-Datasets and lerobot-align to inspect actions and annotate your own recordings.">
+    <meta property="og:image" content="https://l5vel.com/assets/img/blog/sbot-datasets/card.jpg">
+    <meta property="article:published_time" content="2026-09-09">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="sBot-Datasets &mdash; robot demonstrations, step by step">
+    <meta name="twitter:description" content="Explore 1,499 robot demonstrations with video, actions and timed subtask annotations. Use sBot-Datasets and lerobot-align to inspect actions and annotate your own recordings.">
+    <meta name="twitter:image" content="https://l5vel.com/assets/img/blog/sbot-datasets/card.jpg">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230f172a'/><text x='16' y='22' font-family='system-ui,sans-serif' font-size='15' font-weight='700' fill='%232dd4bf' text-anchor='middle'>L5</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-nav is-solid" id="siteNav">
+        <div class="nav-inner">
+            <a href="../../index.html" class="logo">
+                <span class="logo-mark" aria-hidden="true">L5</span>
+                L5VEL
+            </a>
+
+            <nav aria-label="Main">
+                <ul class="nav-links">
+                    <li><a class="nav-link" href="../../index.html#products">Products</a></li>
+                    <li><a class="nav-link" href="../../mpep/index.html">A-MPEP</a></li>
+                    <li><a class="nav-link" href="../../sbot/index.html">S-bot</a></li>
+                    <li><a class="nav-link" href="../index.html" aria-current="page">Blogs</a></li>
+                    <li class="nav-cta-item"><a class="nav-link nav-cta" href="#contact">Get early access</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <!-- ============ HERO ============ -->
+        <section class="prod-hero post-hero">
+            <div class="prod-hero-inner">
+                <p class="prod-eyebrow">Datasets</p>
+                <h1 class="prod-title">sBot-Datasets</h1>
+                <p class="prod-lede">
+                    Robot demonstrations, step by step. Explore the data, connect instructions
+                    to actions, and put your own recordings on a subtask timeline.
+                </p>
+                <p class="post-byline">
+                    9 September 2026 &middot; L5VEL &middot;
+                    <a href="https://huggingface.co/L5vel">huggingface.co/L5vel</a>
+                </p>
+            </div>
+        </section>
+
+        <div class="page-content">
+            <div class="bg-gradient"></div>
+            <div class="content-inner">
+
+
+                <article class="article">
+
+                    <p class="article-lede" id="problem">
+                        &ldquo;Clean the table with the green towel&rdquo; sounds like one action.
+                        In the demonstration below, the robot picks up the towel, moves it toward the
+                        mess, wipes, repositions, wipes again, and puts it down. The whole episode
+                        takes about 52 seconds.
+                    </p>
+
+                    <p>
+                        If you want to study the grasp or train a policy on the wiping step, the
+                        instruction for the whole episode leaves you with work to do. You need to
+                        find that action in the recording and decide where it begins and ends.
+                        Timestamped subtask annotations give you a starting point.
+                    </p>
+
+                    <p>
+                        We&rsquo;re releasing <strong>sBot-Datasets</strong>: 1,499 teleoperated robot
+                        demonstrations across ten tasks, with three camera views, robot states and
+                        actions, and 6,882 subtask spans. Alongside the data, we&rsquo;re sharing
+                        <a href="https://github.com/l5vel/lerobot-align"><code>lerobot-align</code></a>,
+                        our extension of LeRobot&rsquo;s annotation pipeline, to help put the steps
+                        in your own recordings on a timeline.
+                    </p>
+
+                    <figure class="figure">
+                        <div class="clip-media">
+                            <video controls preload="none" playsinline
+                                   poster="../../assets/posters/blog/clean-table.jpg"
+                                   aria-label="Left scene camera recording of episode 104 of base4-clean-table: clean the table with the green towel">
+                                <source src="../../assets/video/blog/clean-table.mp4" type="video/mp4">
+                                <track kind="captions" src="../../assets/video/blog/clean-table.vtt"
+                                       srclang="en" label="Import-route subtask annotation" default>
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <figcaption>
+                            <b>Figure 1 &mdash; one task, two wiping passes.</b>
+                            Episode 104 of <code>base4-clean-table</code>. The captions follow the
+                            released subtask timeline.
+                            <a href="reference/index.html#language-storage">Source and annotation details</a>.
+                        </figcaption>
+                    </figure>
+
+                    <p>
+                        Here is the published subtask timeline for that episode. Notice that moving
+                        the towel and wiping both appear twice:
+                    </p>
+
+                    <ol>
+                        <li><strong>0.00 s</strong> &mdash; pick up the green towel from the table</li>
+                        <li><strong>3.94 s</strong> &mdash; move the green towel towards the mess</li>
+                        <li><strong>9.00 s</strong> &mdash; clean the table thoroughly</li>
+                        <li><strong>30.08 s</strong> &mdash; move the green towel towards the mess</li>
+                        <li><strong>36.02 s</strong> &mdash; clean the table thoroughly</li>
+                        <li><strong>43.60 s</strong> &mdash; place the green towel on the table</li>
+                        <li><strong>46.70 s</strong> &mdash; go home</li>
+                    </ol>
+
+                    <p>
+                        Those repeated steps are easy to lose in a summary of the video. Keeping
+                        them separate lets you find both wiping passes, look at the repositioning
+                        between them, and pair each part of the demonstration with its instruction.
+                    </p>
+
+                    <h2 id="datasets">What you can do with the data</h2>
+
+                    <p>
+                        The collection covers everyday manipulation in our working laboratory:
+                        picking up a cup or bottle, moving a croissant onto a plate, retrieving a
+                        drink from a fridge, and opening a door and driving through it. Some
+                        episodes are short grasps; others combine several steps of navigation and
+                        manipulation. All were recorded on the same platform, a six-axis arm with
+                        a parallel gripper on a mobile base.
+                    </p>
+
+                    <p>
+                        Together, the recordings span <strong>17.2 hours</strong>. We publish them in
+                        <strong>LeRobot v3 format under Apache-2.0</strong>, with public, ungated
+                        downloads. The <a href="reference/index.html#compare">dataset table</a>
+                        lists the tasks, episode counts and download sizes.
+                    </p>
+
+                    <h3>Look closely at an action</h3>
+
+                    <p>
+                        Start with a subtask to find the part of an episode you care about, then
+                        inspect it from the two scene cameras and the wrist camera. In the croissant
+                        example below, the scene views show the arm&rsquo;s approach across the table;
+                        the wrist view makes the target and destination plate easier to see. That
+                        gives you a way to check what an annotation refers to before using it.
+                    </p>
+
+                    <figure class="figure">
+                        <ul class="frame-grid is-triptych">
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../assets/img/blog/sbot-datasets/views-croissant-left.jpg"
+                                         alt="Left scene camera: the robot arm is lowered over a dark wooden table set with plates, a bottle and coloured objects." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>Left scene camera</b>Scene and approach context</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../assets/img/blog/sbot-datasets/views-croissant-right.jpg"
+                                         alt="Right scene camera at the same recorded timestamp, showing the robot arm's reach across the table from the opposite side." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>Right scene camera</b>Opposite approach angle</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../assets/img/blog/sbot-datasets/views-croissant-wrist.jpg"
+                                         alt="Wrist camera looking down between the gripper fingers at a croissant, with an empty pale-green plate to its left." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>Wrist camera</b>Target and contact detail</p>
+                            </li>
+                        </ul>
+                        <figcaption>
+                            <b>Three-camera example &mdash; one recorded timestamp, three useful views.</b>
+                            <code>base4-plate-croissant</code>, episode 47 at 15.8&nbsp;s. The scene
+                            cameras show the robot&rsquo;s position and approach; the wrist view makes the
+                            croissant and destination plate easier to see.
+                        </figcaption>
+                    </figure>
+
+                    <h3>Connect instructions to robot actions</h3>
+
+                    <p>
+                        Each episode includes video, joint-space and end-effector states and actions,
+                        and language annotations. You can use the timed steps to prepare training
+                        samples with a subtask instruction, or evaluate a policy on one part of a
+                        longer task. The base and arm share an action vector, so episodes involving
+                        both movement and manipulation retain those actions together.
+                    </p>
+
+                    <h3>Study how demonstrations break into steps</h3>
+
+                    <p>
+                        The collection also gives you examples for exploring temporal segmentation:
+                        how long actions last, where labels repeat, and how timing varies between
+                        demonstrations of the same task. You can inspect the state, action and
+                        language data without downloading the videos. For the croissant dataset,
+                        that is about 34&nbsp;MB instead of 2.5&nbsp;GB;
+                        the <a href="reference/index.html#access">download and parsing example</a>
+                        prints the subtask start times for each episode.
+                    </p>
+
+                    <p id="language">
+                        The annotations need context when you use them. Of the 1,499 episodes, 895
+                        contain imported subtask spans, 602 contain model-generated spans, and two
+                        have empty tracks. The import records do not establish who wrote or reviewed
+                        the original labels. We have not independently measured annotation agreement
+                        or downstream training gains for this release. Use the
+                        <a href="reference/index.html#provenance">annotation provenance</a> and
+                        <a href="reference/index.html#caveats">known limitations</a> to choose and
+                        check the data for your experiment.
+                    </p>
+
+                    <h2 id="tool">Put your own recordings on a subtask timeline</h2>
+
+                    <p>
+                        The same question comes up when preparing a new collection: how do you get
+                        from a recording to a sequence of timed instructions? LeRobot&rsquo;s
+                        <a href="https://huggingface.co/docs/lerobot/en/annotation_pipeline">steerable
+                        annotation pipeline</a> already uses a vision-language model to describe an
+                        episode and divide it into subtasks. We built on that work in
+                        <code>lerobot-align</code>, adding fixed-label alignment, native-video input
+                        and boundary calibration.
+                    </p>
+
+                    <p>
+                        Where you start depends on what you already have:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>A recording without subtask labels.</strong> Generate a first
+                            draft of the steps and their times. You can then pass the generated
+                            labels through a separate alignment pass before reviewing the result.
+                        </li>
+                        <li>
+                            <strong>The steps, but no timestamps.</strong> Supply the ordered labels
+                            and ask the model to locate them in the video. For the cleaning episode,
+                            that list would include both wiping passes. This lets you keep your
+                            chosen wording while drafting when each step happens.
+                        </li>
+                        <li>
+                            <strong>Labels and times already recorded.</strong> Import the existing
+                            spans into LeRobot&rsquo;s language fields. Importing subtasks avoids a
+                            model call for subtask generation; the writer snaps starts to frames
+                            and joins adjacent spans to cover the episode.
+                        </li>
+                    </ul>
+
+                    <p>
+                        For a new annotation, native-video mode sends sampled frames as a clip.
+                        The model can use the clip&rsquo;s timeline instead of reading timestamps
+                        drawn on a grid of images. If you have reference-annotated examples of a
+                        repeated task, calibration can use their timing patterns to adjust later
+                        predictions. Our study reserved ten examples per task; calibration falls
+                        back to the raw prediction when it cannot fit the relevant pattern.
+                    </p>
+
+                    <p>
+                        Review the draft against the recording before using it as a reference.
+                        In the cleaning example, check that the two wiping passes are still separate
+                        and that the transition into each pass matches the video. Calibration can
+                        adjust a timestamp, but it cannot recover a step the model left out.
+                    </p>
+
+                    <h2 id="evaluation">What we learned from testing the timing</h2>
+
+                    <p>
+                        We tested a focused question: <strong>when the correct steps are supplied,
+                        how well can the tool place them in time?</strong> Our study used Qwen3.8-27B
+                        on held-out recordings from four L5VEL task groups and 39 RH20T task groups
+                        in <a href="https://huggingface.co/datasets/InternRobotics/RoboInter-Data">RoboInter-Data</a>.
+                        It did not test label discovery, the generated annotations in this release,
+                        or policy training.
+                    </p>
+
+                    <p>
+                        Native video placed the supplied steps more accurately than contact sheets
+                        at the same 300-frame budget in these runs. Calibration also raised the
+                        average timing scores on both sets, with wide uncertainty across the four
+                        L5VEL task groups. The RH20T calibration results are exploratory because we
+                        revised that protocol after an initial run. We did not establish an accuracy
+                        benefit from adding a second camera view.
+                    </p>
+
+                    <p>
+                        A useful check was to predict timing from the ten examples alone, without
+                        looking at the video. Those simple timing templates had temporal-overlap
+                        scores at least as high as the best model configuration. That limits what
+                        we can conclude about the model&rsquo;s added value: for a repetitive task
+                        with known steps, compare it with a timing template as well as reviewing
+                        its output. The <a href="reference/index.html#alignment-study">full results</a>
+                        include the charts, uncertainty estimates and study limitations.
+                    </p>
+
+                    <h3 id="upstream">Native video also used fewer visual tokens</h3>
+
+                    <p>
+                        In a separate count using the Qwen3.8-27B processor, native video used
+                        <strong>54.9% fewer visual tokens</strong> across the same 2,062 held-out
+                        recordings than contact sheets built from matching frames. This result
+                        uses two frames per second, a 300-frame cap and frames resized to 224 pixels
+                        wide. It suggests a smaller visual input workload under those settings;
+                        it does not measure billing, latency or total token savings. The
+                        <a href="reference/index.html#visual-tokens">token comparison</a> explains
+                        the count and links to the public measurements.
+                    </p>
+
+                    <figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <img src="../../assets/img/blog/sbot-datasets/figure3.svg"
+                                alt="Left: all 2,062 recordings fall below the equal-token diagonal, with fewer visual tokens for native video than contact sheets. Right: native video uses 44.4% of the contact-sheet visual tokens on L5VEL, 45.8% on RH20T, and 45.1% pooled."
+                                width="900" height="560" loading="lazy"
+                                style="display:block;width:100%;height:auto;min-width:700px">
+                        </div>
+                        <table class="visually-hidden">
+                            <caption>Aggregate values plotted in the right panel of Figure 2</caption>
+                            <thead><tr><th>Population</th><th>Trajectories</th><th>Contact-sheet visual tokens</th><th>Native-video visual tokens</th><th>Video relative to sheets</th><th>Reduction</th></tr></thead>
+                            <tbody>
+                                <tr><th>L5VEL</th><td>757</td><td>3,568,425</td><td>1,584,275</td><td>44.4%</td><td>55.6%</td></tr>
+                                <tr><th>RH20T</th><td>1,305</td><td>3,869,040</td><td>1,771,784</td><td>45.8%</td><td>54.2%</td></tr>
+                                <tr><th>Pooled (L5VEL + RH20T)</th><td>2,062</td><td>7,437,465</td><td>3,356,059</td><td>45.1%</td><td>54.9%</td></tr>
+                            </tbody>
+                        </table>
+                        <figcaption>
+                            <b>Figure 2 &mdash; the same frames, fewer visual tokens.</b>
+                            Each point compares one recording in both formats. Native video used
+                            fewer visual tokens in every recording, with a 54.9% reduction overall
+                            under the Qwen3.8-27B settings above.
+                            <a href="reference/index.html#visual-tokens">Method and source data</a>.
+                        </figcaption>
+                    </figure>
+
+                    <h2 id="try">Start with one episode</h2>
+
+                    <p>
+                        A small first experiment is to follow one task from its instruction to the
+                        video and then to the robot actions:
+                    </p>
+
+                    <ol>
+                        <li>
+                            <strong>Choose a task.</strong> Start with
+                            <a href="https://huggingface.co/datasets/L5vel/base4-clean-table-eef-merged-v30">table
+                            cleaning</a> to explore repeated steps, or
+                            <a href="https://huggingface.co/datasets/L5vel/base4-plate-croissant-eef-merged-v30">moving
+                            a croissant onto a plate</a> for a shorter sequence.
+                        </li>
+                        <li>
+                            <strong>Read its timeline.</strong> Use the
+                            <a href="reference/index.html#access">data-only download and parsing
+                            recipe</a> to list an episode&rsquo;s subtask start times. Add the videos
+                            when you are ready to inspect the actions at those times.
+                        </li>
+                        <li>
+                            <strong>Try the workflow on your data.</strong> Follow the
+                            <a href="https://github.com/l5vel/lerobot-align#installation">installation
+                            guide</a>, then choose generation, fixed-label alignment or import.
+                            For model annotation, work on a copy of a LeRobot v3 dataset and connect
+                            a compatible vision-language model endpoint; native-video mode needs a
+                            video-capable endpoint. The
+                            <a href="https://github.com/l5vel/lerobot-align/blob/main/ANNOTATION_PIPELINE.md">pipeline
+                            guide</a> has the commands and input formats.
+                        </li>
+                    </ol>
+
+                    <p>
+                        If you use the data or try the tool on a different task, we&rsquo;d like to
+                        hear which steps were useful and where the annotations needed correction.
+                        Those examples can help us decide what to add and improve next.
+                    </p>
+
+                </article>
+
+
+                <!-- ============ CONTACT ============ -->
+                <section class="contact" id="contact">
+                    <div class="contact-card">
+                        <h2 class="contact-title">Working with robot data?</h2>
+                        <p class="contact-text">
+                            Tell us what you&rsquo;re building with the data, or share an episode
+                            that the annotation tool found difficult.
+                        </p>
+                        <a class="btn btn-primary" href="mailto:support@l5vel.com?subject=sBot-Datasets">
+                            support@l5vel.com
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-brand">L5VEL</p>
+            <p class="footer-text">
+                College Station, Texas &middot;
+                <a href="mailto:support@l5vel.com">support@l5vel.com</a>
+            </p>
+            <p class="footer-text">
+                &copy; <span id="year">2026</span> L5VEL. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

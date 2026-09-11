@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>sBot-Datasets data reference | L5VEL</title>
+    <meta name="description" content="Reference for L5VEL's open LeRobot datasets: per-dataset table, shared format, camera layout, annotation density and variation, access recipes, evaluation metric definitions and reproduction procedures.">
+    <link rel="canonical" href="https://l5vel.com/blog/sbot-datasets/reference/">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="robots" content="index,follow">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://l5vel.com/blog/sbot-datasets/reference/">
+    <meta property="og:title" content="sBot-Datasets data reference | L5VEL">
+    <meta property="og:description" content="Per-dataset table, shared format, annotation variation, access recipes and evaluation reproduction procedures.">
+    <meta property="og:image" content="https://l5vel.com/assets/img/blog/sbot-datasets/card.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="sBot-Datasets data reference | L5VEL">
+    <meta name="twitter:description" content="Per-dataset table, shared format, annotation variation, access recipes and evaluation reproduction procedures.">
+    <meta name="twitter:image" content="https://l5vel.com/assets/img/blog/sbot-datasets/card.jpg">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230f172a'/><text x='16' y='22' font-family='system-ui,sans-serif' font-size='15' font-weight='700' fill='%232dd4bf' text-anchor='middle'>L5</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/site.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-nav is-solid" id="siteNav">
+        <div class="nav-inner">
+            <a href="../../../index.html" class="logo">
+                <span class="logo-mark" aria-hidden="true">L5</span>
+                L5VEL
+            </a>
+
+            <nav aria-label="Main">
+                <ul class="nav-links">
+                    <li><a class="nav-link" href="../../../index.html#products">Products</a></li>
+                    <li><a class="nav-link" href="../../../mpep/index.html">A-MPEP</a></li>
+                    <li><a class="nav-link" href="../../../sbot/index.html">S-bot</a></li>
+                    <li><a class="nav-link" href="../../index.html" aria-current="page">Blogs</a></li>
+                    <li class="nav-cta-item"><a class="nav-link nav-cta" href="../../../index.html#contact">Get early access</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+
+        <section class="prod-hero post-hero">
+            <div class="prod-hero-inner">
+                <p class="prod-eyebrow">Reference</p>
+                <h1 class="prod-title">sBot-Datasets: data reference</h1>
+                <p class="prod-lede">
+                    The detail behind
+                    <a href="../index.html">sBot-Datasets</a>: what the ten published
+                    repositories contain, how they are structured, how to load them, and how the
+                    evaluation in that post was defined and can be re-run.
+                </p>
+                <p class="post-byline">
+                    Figures read from the published repositories on 9&nbsp;September&nbsp;2026 &middot;
+                    <a href="https://huggingface.co/L5vel">huggingface.co/L5vel</a>
+                </p>
+            </div>
+        </section>
+
+        <div class="page-content">
+            <div class="bg-gradient"></div>
+            <div class="content-inner">
+
+                <article class="article">
+
+                    <div class="callout" id="provenance">
+                        <p class="callout-title">Scope</p>
+                        <p>
+                            This page is a snapshot of a growing collection. The counts and figures
+                            below were computed from the published repositories on the date above; if
+                            more datasets have been added since, treat them as a lower bound and
+                            recompute rather than editing by hand.
+                        </p>
+                        <p>
+                            <strong>The subtask spans have mixed processing provenance.</strong>
+                            Publication receipts classify 897 episodes on the import route: 895 contain
+                            5,201 spans and two contain no spans. Comparing the ten current merged release
+                            snapshots with all 32 component outputs matched every one of the 1,499
+                            <code>language_persistent</code> payloads, so these counts describe the release
+                            rather than an intermediate export. Component logs show the source spans
+                            were read from <code>meta/lerobot_annotations.json</code> without a VLM call.
+                            The publishing code preserved all label sequences but cleaned their times:
+                            4,136 of 5,201 starts moved, 4,135 by no more than one 50&nbsp;Hz frame and
+                            one by 0.563&nbsp;s; ends were rebuilt from the next start and episode end.
+                            Those files and receipts contain no field naming the original author
+                            or recording human verification, so &ldquo;import route&rdquo; must not be read as
+                            proof of human authorship.
+                        </p>
+                        <p>
+                            The other 602 episodes contain 1,681 spans produced on the generation route.
+                            Every corresponding component log names <code>Qwen/Qwen3.8-27B</code>; the
+                            logs do not retain an immutable model revision. Canonical task strings came
+                            from source task metadata. The publishing pipeline used text-only VLM calls
+                            for task paraphrases and 5,385 memory rows, and deterministically constructed
+                            plan rows from the published subtask sequence. Its component logs also name
+                            Qwen3.8-27B, without a pinned revision. These statements describe the released
+                            snapshot; intermediate files and evaluation predictions are not counted as
+                            released annotations. The L5VEL evaluation uses import-route source references
+                            only and excludes generation-route collection components, so it does not
+                            measure their quality or training usefulness. The narrative, tool design and
+                            findings are in the <a href="../index.html">post</a>.
+                        </p>
+                    </div>
+
+                    <nav class="toc" aria-label="Contents">
+                        <p class="toc-title">Contents</p>
+                        <ol>
+                            <li><a href="#shared">What every dataset shares</a></li>
+                            <li><a href="#compare">Per-dataset table</a></li>
+                            <li><a href="#frames">Cameras and representative frames</a></li>
+                            <li><a href="#density">Annotation density</a></li>
+                            <li><a href="#variation">Variation across the collection</a></li>
+                            <li><a href="#access">Getting and using the data</a></li>
+                            <li><a href="#caveats">Known limitations of the release</a></li>
+                            <li><a href="#calibration">Calibration protocol</a></li>
+                            <li><a href="#metrics">Evaluation metric definitions</a></li>
+                            <li><a href="#alignment-study">Fixed-label alignment: study and full results</a></li>
+                            <li><a href="#visual-tokens">Native video and visual tokens</a></li>
+                            <li><a href="#reproducing">Reproducing the measurements</a></li>
+                        </ol>
+                    </nav>
+<h2 id="shared">What every dataset shares</h2>
+
+                    <p>
+                        The ten share a common LeRobot schema. The common properties below were checked
+                        against all ten <code>meta/info.json</code> files; two metadata differences are
+                        called out explicitly.
+                    </p>
+
+                    <ul>
+                        <li><strong>Format.</strong> LeRobot <code>codebase_version</code>
+                            <code>v3.0</code> &mdash; Parquet shards under <code>data/</code>, MP4
+                            video under <code>videos/</code>, metadata under <code>meta/</code>.
+                            Not the older v2.1 layout, and not Lance.</li>
+                        <li><strong>Rate.</strong> A declared 50&nbsp;Hz for every stream, state and video alike.
+                            Video is H.264, <code>yuv420p</code>, no audio.</li>
+                        <li><strong>Cameras.</strong> Exactly three per episode:
+                            <code>observation.images.left</code>,
+                            <code>observation.images.right</code> and
+                            <code>observation.images.wrist</code>, each 640&times;480 RGB.</li>
+                        <li><strong>Proprioception.</strong> A 10-dimensional
+                            <code>observation.state</code> and a matching <code>action</code>:
+                            <code>joint1</code>&ndash;<code>joint6</code>, <code>gripper</code>,
+                            <code>base_x</code>, <code>base_y</code>, <code>base_yaw</code>.
+                            In nine repositories, the metadata's <code>names.motors</code> lists only
+                            the first seven entries, so it incompletely labels these vectors;
+                            <code>base4-plate-croissant</code> labels all ten. A separate 3-dimensional
+                            <code>observation.base_pose</code> carries
+                            <code>base_x</code>, <code>base_y</code>, <code>base_yaw</code>.</li>
+                        <li><strong>End-effector space.</strong> A 13-dimensional
+                            <code>observation.eef_state</code> and <code>action.eef</code>: Cartesian
+                            position, two orientation axes, gripper, and the base pose again. This is
+                            what the <code>-eef-merged-</code> in every repository name refers to, and
+                            each repository also ships a <code>meta/eef_kinematics.json</code>.</li>
+                        <li><strong>Language.</strong> Two per-frame columns of LeRobot
+                            <code>language</code> dtype, <code>language_persistent</code> and
+                            <code>language_events</code>. The <code>subtask</code> spans mix import and
+                            Qwen3.8-27B generation routes; <code>memory</code> rows and task paraphrases
+                            come from text-only Qwen3.8-27B calls, and <code>plan</code> rows are derived.
+                            The paraphrase target was ten alternatives: 1,482 episodes retain ten and
+                            17 retain nine, in addition to the canonical task. See the
+                            <a href="#provenance">provenance note</a>.</li>
+                        <li><strong>Per-episode flags.</strong> <code>meta/episodes/</code> carries a
+                            boolean <code>success</code> per episode, and a per-frame boolean
+                            <code>correction</code> is intended to mark teleoperator intervention.
+                            It is false on every released frame; this records no marked intervention
+                            segments, rather than independently establishing that none occurred.</li>
+                        <li><strong>Licence.</strong> Apache-2.0 on all ten, none gated, none private.
+                            All were last modified on 24&nbsp;August&nbsp;2026.</li>
+                    </ul>
+
+                    <p>
+                        A second structural difference is that five repositories
+                        (<code>base4-clean-table</code>, <code>base4-mobile-door</code>,
+                        <code>u850-bag-place</code>, <code>u850-fridge-drink</code> and
+                        <code>base4-plate-croissant</code>) declare an extra
+                        <code>task_index_high_level</code> feature that the other five do not.
+                        Treat it as an artifact of the upstream recording pipeline and do not rely
+                        on it being present.
+                    </p>
+
+
+                    <h2 id="compare">Per-dataset table</h2>
+
+                    <p>
+                        Every figure is read from the published repositories. Episodes, frames and
+                        the task string come from <code>meta/info.json</code> and
+                        <code>meta/tasks.parquet</code>; duration is frames divided by the declared
+                        50&nbsp;fps; the median episode length is computed over that dataset's full
+                        <code>meta/episodes/</code> table; size is the sum of the Hugging Face file
+                        tree. <code>Subtasks/ep</code> is the mean number of spans in
+                        <code>language_persistent</code>, counted over every episode of that dataset,
+                        including the two that carry an empty subtask track. <code>Subtask source</code>
+                        comes from the publication-run import/generation receipts and carries the
+                        authorship limits stated <a href="#provenance">above</a>. Because all ten share
+                        format, rate, cameras, resolution, modalities and licence, those columns are
+                        stated once <a href="#shared">above</a> rather than repeated here.
+                    </p>
+                </article>
+
+                <div class="article-wide">
+<div class="data-table-wrap" tabindex="0">
+                        <table class="data-table">
+                            <caption>
+                                The ten datasets published at
+                                <a href="https://huggingface.co/L5vel">huggingface.co/L5vel</a>,
+                                ordered by recorded duration. All are LeRobot v3.0, 50&nbsp;Hz, three 640&times;480
+                                camera views, Apache-2.0.
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dataset</th>
+                                    <th scope="col">Task string</th>
+                                    <th scope="col" class="num">Episodes</th>
+                                    <th scope="col" class="num">Frames</th>
+                                    <th scope="col" class="num">Duration</th>
+                                    <th scope="col" class="num">Median episode</th>
+                                    <th scope="col" class="num">Range</th>
+                                    <th scope="col" class="num">Subtasks/ep</th>
+                                    <th scope="col">Subtask source</th>
+                                    <th scope="col" class="num">Size</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/u850-fridge-drink-eef-merged-v30">u850-fridge-drink-eef-merged-v30</a></th>
+                                    <td>grab a drink from the fridge</td>
+                                    <td class="num">250</td>
+                                    <td class="num">968,523</td>
+                                    <td class="num">323 min</td>
+                                    <td class="num">78 s</td>
+                                    <td class="num">41&ndash;105 s</td>
+                                    <td class="num">5.8</td>
+                                    <td>Import route (249 with spans; 1 empty)</td>
+                                    <td class="num">18.6 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-clean-table-eef-merged-v30">base4-clean-table-eef-merged-v30</a></th>
+                                    <td>clean the table with the green towel</td>
+                                    <td class="num">199</td>
+                                    <td class="num">534,608</td>
+                                    <td class="num">178 min</td>
+                                    <td class="num">52 s</td>
+                                    <td class="num">27&ndash;236 s</td>
+                                    <td class="num">6.2</td>
+                                    <td>Import route (198 with spans; 1 empty)</td>
+                                    <td class="num">9.6 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-mobile-door-eef-merged-v30">base4-mobile-door-eef-merged-v30</a></th>
+                                    <td>open the door and move inside</td>
+                                    <td class="num">200</td>
+                                    <td class="num">506,473</td>
+                                    <td class="num">169 min</td>
+                                    <td class="num">51 s</td>
+                                    <td class="num">40&ndash;68 s</td>
+                                    <td class="num">5.8</td>
+                                    <td>Mixed (150 import route; 50 Qwen generation route)</td>
+                                    <td class="num">6.8 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/u850-bag-place-eef-merged-v30">u850-bag-place-eef-merged-v30</a></th>
+                                    <td>pick up the bag on the ground and place it on the table</td>
+                                    <td class="num">200</td>
+                                    <td class="num">477,058</td>
+                                    <td class="num">159 min</td>
+                                    <td class="num">48 s</td>
+                                    <td class="num">38&ndash;58 s</td>
+                                    <td class="num">6.0</td>
+                                    <td>Import route (200 with spans)</td>
+                                    <td class="num">9.3 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-plate-croissant-eef-merged-v30">base4-plate-croissant-eef-merged-v30</a></th>
+                                    <td>move the croissant to the empty plate</td>
+                                    <td class="num">98</td>
+                                    <td class="num">155,517</td>
+                                    <td class="num">52 min</td>
+                                    <td class="num">32 s</td>
+                                    <td class="num">23&ndash;51 s</td>
+                                    <td class="num">4.3</td>
+                                    <td>Import route (98 with spans)</td>
+                                    <td class="num">2.5 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/u850-fridge-open-eef-merged-v30">u850-fridge-open-eef-merged-v30</a></th>
+                                    <td>open the fridge door</td>
+                                    <td class="num">100</td>
+                                    <td class="num">118,990</td>
+                                    <td class="num">40 min</td>
+                                    <td class="num">24 s</td>
+                                    <td class="num">16&ndash;32 s</td>
+                                    <td class="num">3.6</td>
+                                    <td>Qwen generation route (100 with spans)</td>
+                                    <td class="num">2.2 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-mobile-bag-eef-merged-v30">base4-mobile-bag-eef-merged-v30</a></th>
+                                    <td>pick up the grocery bag from the ground</td>
+                                    <td class="num">100</td>
+                                    <td class="num">92,672</td>
+                                    <td class="num">31 min</td>
+                                    <td class="num">18 s</td>
+                                    <td class="num">12&ndash;27 s</td>
+                                    <td class="num">2.6</td>
+                                    <td>Qwen generation route (100 with spans)</td>
+                                    <td class="num">1.5 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-mobile-place-cup-eef-merged-v30">base4-mobile-place-cup-eef-merged-v30</a></th>
+                                    <td>place the blue cup on the table (+1 more)</td>
+                                    <td class="num">150</td>
+                                    <td class="num">90,017</td>
+                                    <td class="num">30 min</td>
+                                    <td class="num">11 s</td>
+                                    <td class="num">8&ndash;24 s</td>
+                                    <td class="num">2.3</td>
+                                    <td>Qwen generation route (150 with spans)</td>
+                                    <td class="num">1.6 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-mobile-cup-eef-merged-v30">base4-mobile-cup-eef-merged-v30</a></th>
+                                    <td>pick up the blue cup from the table</td>
+                                    <td class="num">102</td>
+                                    <td class="num">75,870</td>
+                                    <td class="num">25 min</td>
+                                    <td class="num">15 s</td>
+                                    <td class="num">11&ndash;21 s</td>
+                                    <td class="num">2.5</td>
+                                    <td>Qwen generation route (102 with spans)</td>
+                                    <td class="num">1.4 GB</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><a class="code" href="https://huggingface.co/datasets/L5vel/base4-mobile-bottle-eef-merged-v30">base4-mobile-bottle-eef-merged-v30</a></th>
+                                    <td>pick up the green bottle from the table</td>
+                                    <td class="num">100</td>
+                                    <td class="num">69,748</td>
+                                    <td class="num">23 min</td>
+                                    <td class="num">14 s</td>
+                                    <td class="num">8&ndash;24 s</td>
+                                    <td class="num">1.9</td>
+                                    <td>Qwen generation route (100 with spans)</td>
+                                    <td class="num">1.2 GB</td>
+                                </tr>
+                                <tr class="is-highlight">
+                                    <th scope="row">All ten</th>
+                                    <td>&mdash;</td>
+                                    <td class="num">1,499</td>
+                                    <td class="num">3,089,476</td>
+                                    <td class="num">17.2 h</td>
+                                    <td class="num">&mdash;</td>
+                                    <td class="num">8&ndash;236 s</td>
+                                    <td class="num">4.6</td>
+                                    <td>897 import route (895 with spans; 2 empty); 602 Qwen generation route</td>
+                                    <td class="num">54.9 GB</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="table-note">
+                        <strong>Mixed-door mapping.</strong> The release has no per-episode provenance
+                        column. Component order and exact language-row matches show that episodes
+                        100&ndash;149 of <code>base4-mobile-door</code> are the 50 Qwen generation-route
+                        episodes; 0&ndash;99 and 150&ndash;199 are on the import route. This mapping identifies
+                        the processing path, while the original authorship of the import-route files
+                        remains unrecorded.
+                    </p>
+                </div>
+
+                <article class="article">
+<figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" width="900" height="510" role="img" aria-labelledby="t68286 d70732" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"><title id="t68286">Recorded duration and episode count per dataset</title><desc id="d70732">Horizontal bar chart. Each of the ten L5VEL datasets is drawn as a bar whose length is its recorded duration in minutes, computed as total frames divided by 50 frames per second. u850-fridge-drink is largest at 323 minutes over 250 episodes; base4-mobile-bottle is smallest at 23 minutes over 100 episodes. Together the ten hold 1,499 episodes and 17.2 hours.</desc>
+                            <text x="0" y="17" font-size="13" font-weight="600" fill="#0f172a">Recorded duration per dataset</text>
+                            <text x="0" y="36" font-size="12" fill="#64748b">minutes of 50 Hz recording &#183; episode count and on-disk size at right</text>
+                            <line x1="232.0" y1="50" x2="232.0" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="232.0" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">0</text>
+                            <line x1="317.1" y1="50" x2="317.1" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="317.1" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">60</text>
+                            <line x1="402.2" y1="50" x2="402.2" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="402.2" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">120</text>
+                            <line x1="487.4" y1="50" x2="487.4" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="487.4" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">180</text>
+                            <line x1="572.5" y1="50" x2="572.5" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="572.5" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">240</text>
+                            <line x1="657.6" y1="50" x2="657.6" y2="448" stroke="#e2e8f0" stroke-width="1"/>
+                            <text x="657.6" y="44" font-size="10.5" fill="#64748b" text-anchor="middle">300</text>
+                            <text x="222" y="69" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-drink</text>
+                            <rect x="232" y="59" width="458.0" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="698.0" y="71" font-size="11.5" fill="#475569">323 min</text>
+                            <text x="890" y="71" font-size="11.5" fill="#64748b" text-anchor="end">250 ep &#183; 18.6 GB</text>
+                            <text x="222" y="109" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-clean-table</text>
+                            <rect x="232" y="99" width="252.8" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="492.8" y="111" font-size="11.5" fill="#475569">178 min</text>
+                            <text x="890" y="111" font-size="11.5" fill="#64748b" text-anchor="end">199 ep &#183; 9.6 GB</text>
+                            <text x="222" y="149" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-door</text>
+                            <rect x="232" y="139" width="239.5" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="479.5" y="151" font-size="11.5" fill="#475569">169 min</text>
+                            <text x="890" y="151" font-size="11.5" fill="#64748b" text-anchor="end">200 ep &#183; 6.8 GB</text>
+                            <text x="222" y="189" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-bag-place</text>
+                            <rect x="232" y="179" width="225.6" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="465.6" y="191" font-size="11.5" fill="#475569">159 min</text>
+                            <text x="890" y="191" font-size="11.5" fill="#64748b" text-anchor="end">200 ep &#183; 9.3 GB</text>
+                            <text x="222" y="229" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-plate-croissant</text>
+                            <rect x="232" y="219" width="73.5" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="313.5" y="231" font-size="11.5" fill="#475569">52 min</text>
+                            <text x="890" y="231" font-size="11.5" fill="#64748b" text-anchor="end">98 ep &#183; 2.5 GB</text>
+                            <text x="222" y="269" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-open</text>
+                            <rect x="232" y="259" width="56.3" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="296.3" y="271" font-size="11.5" fill="#475569">40 min</text>
+                            <text x="890" y="271" font-size="11.5" fill="#64748b" text-anchor="end">100 ep &#183; 2.2 GB</text>
+                            <text x="222" y="309" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bag</text>
+                            <rect x="232" y="299" width="43.8" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="283.8" y="311" font-size="11.5" fill="#475569">31 min</text>
+                            <text x="890" y="311" font-size="11.5" fill="#64748b" text-anchor="end">100 ep &#183; 1.5 GB</text>
+                            <text x="222" y="349" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-place-cup</text>
+                            <rect x="232" y="339" width="42.6" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="282.6" y="351" font-size="11.5" fill="#475569">30 min</text>
+                            <text x="890" y="351" font-size="11.5" fill="#64748b" text-anchor="end">150 ep &#183; 1.6 GB</text>
+                            <text x="222" y="389" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-cup</text>
+                            <rect x="232" y="379" width="35.9" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="275.9" y="391" font-size="11.5" fill="#475569">25 min</text>
+                            <text x="890" y="391" font-size="11.5" fill="#64748b" text-anchor="end">102 ep &#183; 1.4 GB</text>
+                            <text x="222" y="429" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bottle</text>
+                            <rect x="232" y="419" width="33.0" height="15" rx="2.5" fill="#0d9488"/>
+                            <text x="273.0" y="431" font-size="11.5" fill="#475569">23 min</text>
+                            <text x="890" y="431" font-size="11.5" fill="#64748b" text-anchor="end">100 ep &#183; 1.2 GB</text>
+                            <line x1="232" y1="448" x2="690" y2="448" stroke="#e2e8f0"/>
+                            <text x="232" y="494" font-size="11" fill="#64748b">Total: 1,499 episodes &#183; 3,089,476 frames &#183; 17.2 h &#183; 54.9 GB</text>
+                            </svg>
+                        </div>
+                        <figcaption>
+                            <b>Figure R1 &mdash; the collection is dominated by four datasets.</b>
+                            <code>u850-fridge-drink</code> alone holds more recorded time than the
+                            five smallest combined. If you are looking for long-horizon episodes,
+                            the top four rows are where they are; if you want shorter trajectories,
+                            the bottom five.
+                            <span class="figure-source">Source: total frames &divide; 50&nbsp;fps
+                            from each dataset's <code>meta/info.json</code>; episode counts and file
+                            sizes from the Hugging Face repository tree.</span>
+                        </figcaption>
+                    </figure><figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 502" width="900" height="502" role="img" aria-labelledby="t62127 d87447" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"><title id="t62127">Episode-length distribution for each dataset</title><desc id="d87447">Box plot on a logarithmic time axis. For each dataset a box spans the 25th to 75th percentile of episode length, a white tick marks the median, and whiskers reach the 5th and 95th percentiles; minimum and maximum are shown as small dots. Median episode length ranges from 11.5 seconds for base4-mobile-place-cup to 77.6 seconds for u850-fridge-drink. Computed over all 1,499 episodes.</desc>
+                            <text x="0" y="17" font-size="13" font-weight="600" fill="#0f172a">Episode length, all 1,499 episodes</text>
+                            <text x="0" y="36" font-size="12" fill="#64748b">box = interquartile range &#183; tick = median &#183; whiskers = 5th–95th percentile &#183; dots = min and max</text>
+                            <line x1="306.3" y1="56" x2="306.3" y2="434" stroke="#e2e8f0"/>
+                            <text x="306.3" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">10s</text>
+                            <line x1="407.1" y1="56" x2="407.1" y2="434" stroke="#e2e8f0"/>
+                            <text x="407.1" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">20s</text>
+                            <line x1="466.0" y1="56" x2="466.0" y2="434" stroke="#e2e8f0"/>
+                            <text x="466.0" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">30s</text>
+                            <line x1="566.8" y1="56" x2="566.8" y2="434" stroke="#e2e8f0"/>
+                            <text x="566.8" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">60s</text>
+                            <line x1="667.6" y1="56" x2="667.6" y2="434" stroke="#e2e8f0"/>
+                            <text x="667.6" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">120s</text>
+                            <line x1="768.4" y1="56" x2="768.4" y2="434" stroke="#e2e8f0"/>
+                            <text x="768.4" y="50" font-size="10.5" fill="#64748b" text-anchor="middle">240s</text>
+                            <text x="222" y="78" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-drink</text>
+                            <line x1="575.2" y1="74" x2="629.0" y2="74" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="575.2" y1="70" x2="575.2" y2="78" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="629.0" y1="70" x2="629.0" y2="78" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="592.1" y="67" width="21.6" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="604.2" y1="67" x2="604.2" y2="81" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="513.1" cy="74" r="2.2" fill="#64748b"/>
+                            <circle cx="647.9" cy="74" r="2.2" fill="#64748b"/>
+                            <text x="890" y="78" font-size="11" fill="#64748b" text-anchor="end">n=250 &#183; med 78s</text>
+                            <text x="222" y="116" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-clean-table</text>
+                            <line x1="482.8" y1="112" x2="600.6" y2="112" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="482.8" y1="108" x2="482.8" y2="116" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="600.6" y1="108" x2="600.6" y2="116" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="515.5" y="105" width="59.1" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="546.2" y1="105" x2="546.2" y2="119" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="450.4" cy="112" r="2.2" fill="#64748b"/>
+                            <circle cx="766.0" cy="112" r="2.2" fill="#64748b"/>
+                            <text x="890" y="116" font-size="11" fill="#64748b" text-anchor="end">n=199 &#183; med 52s</text>
+                            <text x="222" y="154" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-door</text>
+                            <line x1="518.0" y1="150" x2="561.7" y2="150" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="518.0" y1="146" x2="518.0" y2="154" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="561.7" y1="146" x2="561.7" y2="154" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="533.4" y="143" width="16.2" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="542.7" y1="143" x2="542.7" y2="157" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="509.1" cy="150" r="2.2" fill="#64748b"/>
+                            <circle cx="584.0" cy="150" r="2.2" fill="#64748b"/>
+                            <text x="890" y="154" font-size="11" fill="#64748b" text-anchor="end">n=200 &#183; med 51s</text>
+                            <text x="222" y="192" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-bag-place</text>
+                            <line x1="507.8" y1="188" x2="553.0" y2="188" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="507.8" y1="184" x2="507.8" y2="192" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="553.0" y1="184" x2="553.0" y2="192" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="524.8" y="181" width="17.1" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="533.8" y1="181" x2="533.8" y2="195" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="498.5" cy="188" r="2.2" fill="#64748b"/>
+                            <circle cx="562.8" cy="188" r="2.2" fill="#64748b"/>
+                            <text x="890" y="192" font-size="11" fill="#64748b" text-anchor="end">n=200 &#183; med 48s</text>
+                            <text x="222" y="230" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-plate-croissant</text>
+                            <line x1="433.3" y1="226" x2="507.7" y2="226" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="433.3" y1="222" x2="433.3" y2="230" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="507.7" y1="222" x2="507.7" y2="230" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="455.7" y="219" width="28.9" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="474.0" y1="219" x2="474.0" y2="233" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="427.6" cy="226" r="2.2" fill="#64748b"/>
+                            <circle cx="543.7" cy="226" r="2.2" fill="#64748b"/>
+                            <text x="890" y="230" font-size="11" fill="#64748b" text-anchor="end">n=98 &#183; med 32s</text>
+                            <text x="222" y="268" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-open</text>
+                            <line x1="402.9" y1="264" x2="466.9" y2="264" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="402.9" y1="260" x2="402.9" y2="268" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="466.9" y1="260" x2="466.9" y2="268" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="412.8" y="257" width="35.3" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="431.4" y1="257" x2="431.4" y2="271" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="373.0" cy="264" r="2.2" fill="#64748b"/>
+                            <circle cx="473.3" cy="264" r="2.2" fill="#64748b"/>
+                            <text x="890" y="268" font-size="11" fill="#64748b" text-anchor="end">n=100 &#183; med 24s</text>
+                            <text x="222" y="306" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bag</text>
+                            <line x1="355.6" y1="302" x2="430.5" y2="302" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="355.6" y1="298" x2="355.6" y2="306" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="430.5" y1="298" x2="430.5" y2="306" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="373.8" y="295" width="40.2" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="394.3" y1="295" x2="394.3" y2="309" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="333.5" cy="302" r="2.2" fill="#64748b"/>
+                            <circle cx="452.5" cy="302" r="2.2" fill="#64748b"/>
+                            <text x="890" y="306" font-size="11" fill="#64748b" text-anchor="end">n=100 &#183; med 18s</text>
+                            <text x="222" y="344" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-cup</text>
+                            <line x1="325.4" y1="340" x2="392.4" y2="340" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="325.4" y1="336" x2="325.4" y2="344" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="392.4" y1="336" x2="392.4" y2="344" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="342.5" y="333" width="36.1" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="367.0" y1="333" x2="367.0" y2="347" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="318.8" cy="340" r="2.2" fill="#64748b"/>
+                            <circle cx="415.1" cy="340" r="2.2" fill="#64748b"/>
+                            <text x="890" y="344" font-size="11" fill="#64748b" text-anchor="end">n=102 &#183; med 15s</text>
+                            <text x="222" y="382" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bottle</text>
+                            <line x1="300.7" y1="378" x2="403.5" y2="378" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="300.7" y1="374" x2="300.7" y2="382" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="403.5" y1="374" x2="403.5" y2="382" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="328.7" y="371" width="48.2" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="350.0" y1="371" x2="350.0" y2="385" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="278.1" cy="378" r="2.2" fill="#64748b"/>
+                            <circle cx="432.2" cy="378" r="2.2" fill="#64748b"/>
+                            <text x="890" y="382" font-size="11" fill="#64748b" text-anchor="end">n=100 &#183; med 14s</text>
+                            <text x="222" y="420" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-place-cup</text>
+                            <line x1="300.0" y1="416" x2="378.6" y2="416" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="300.0" y1="412" x2="300.0" y2="420" stroke="#64748b" stroke-width="1.5"/>
+                            <line x1="378.6" y1="412" x2="378.6" y2="420" stroke="#64748b" stroke-width="1.5"/>
+                            <rect x="315.6" y="409" width="27.2" height="14" rx="2.5" fill="#0d9488" fill-opacity="0.85"/>
+                            <line x1="326.1" y1="409" x2="326.1" y2="423" stroke="#ffffff" stroke-width="2"/>
+                            <circle cx="271.3" cy="416" r="2.2" fill="#64748b"/>
+                            <circle cx="434.8" cy="416" r="2.2" fill="#64748b"/>
+                            <text x="890" y="420" font-size="11" fill="#64748b" text-anchor="end">n=150 &#183; med 11s</text>
+                            <text x="232" y="486" font-size="11" fill="#64748b">Time axis is logarithmic. Longest single episode: 236 s (base4-clean-table).</text>
+                            </svg>
+                        </div>
+                        <figcaption>
+                            <b>Figure R2 &mdash; episode length separates the collection into two
+                            regimes.</b> Six shorter-horizon datasets have medians from 11 to
+                            32&nbsp;seconds with relatively little spread. <code>base4-clean-table</code> has the broadest
+                            length distribution and the longest single episode: its interquartile
+                            range spans 42&ndash;63&nbsp;seconds and its maximum is 236&nbsp;seconds.
+                            Its 52-second median is close to <code>base4-mobile-door</code>'s
+                            51&nbsp;seconds and below <code>u850-fridge-drink</code>'s 78&nbsp;seconds.
+                            The time axis is logarithmic.
+                            <span class="figure-source">Source: the <code>length</code> column of
+                            <code>meta/episodes/</code> for all 1,499 episodes, divided by
+                            the declared 50&nbsp;fps.</span>
+                        </figcaption>
+                    </figure>
+                    <h2 id="frames">Cameras and representative frames</h2>
+<p>
+                        Every episode carries three video streams declared at the same 50&nbsp;Hz as
+                        the state: two fixed scene cameras on the robot looking outward, and one
+                        camera at the wrist. The scene views give context and the approach geometry;
+                        the wrist view can make the contact event easier to see. Changing camera
+                        views can introduce a distribution shift; evaluate the views your policy
+                        will actually use. The shared declared rate and dataset timestamps do not
+                        establish the physical synchronization error between sensors; we have not
+                        measured that error.
+                    </p>
+
+
+                    <figure class="figure">
+                        <ul class="frame-grid is-triptych">
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/views-croissant-left.jpg"
+                                         alt="Left scene camera: the arm is lowered over a dark wooden dining table set with plates, a bottle and coloured objects; laboratory benches and a wall display behind." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>observation.images.left</b>640&times;480, 50&nbsp;Hz</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/views-croissant-right.jpg"
+                                         alt="Right scene camera at the same recorded timestamp, showing the arm's reach across the table from the opposite side and a dining chair pushed in beside it." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>observation.images.right</b>640&times;480, 50&nbsp;Hz</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/views-croissant-wrist.jpg"
+                                         alt="Wrist camera: looking straight down between the two gripper fingers at a croissant lying on the dark tabletop, with an empty pale-green plate to its left." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>observation.images.wrist</b>640&times;480, 50&nbsp;Hz</p>
+                            </li>
+                        </ul>
+                        <figcaption>
+                            <b>Figure R3 &mdash; the same recorded timestamp from all three cameras.</b>
+                            <code>base4-plate-croissant</code>, episode 47, 15.8&nbsp;s into a
+                            31.7&nbsp;s episode. The scene cameras place the arm in the room and show
+                            its approach angle; only the wrist camera makes the task legible &mdash;
+                            the croissant to be moved, and the empty plate to move it to.
+                            <span class="figure-source">Source: frames decoded from
+                            <code>videos/observation.images.&#123;left,right,wrist&#125;/chunk-000/</code>
+                            of <a href="https://huggingface.co/datasets/L5vel/base4-plate-croissant-eef-merged-v30">L5vel/base4-plate-croissant-eef-merged-v30</a>.</span>
+                        </figcaption>
+                    </figure><figure class="figure">
+                        <ul class="frame-grid">
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-clean-table.jpg"
+                                         alt="Wrist camera: the gripper holds a folded teal towel flat against a white desktop, a blue spray bottle beyond it." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-clean-table</b>&ldquo;clean the table with the green towel&rdquo; &middot; episode 104, t&nbsp;=&nbsp;29&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-u850-fridge-drink.jpg"
+                                         alt="Wrist camera: inside a refrigerator, the gripper closes around one of three red drink cans on a white shelf." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>u850-fridge-drink</b>&ldquo;grab a drink from the fridge&rdquo; &middot; episode 65, t&nbsp;=&nbsp;43&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-mobile-door.jpg"
+                                         alt="Wrist camera: the gripper is level with the lever handle of a heavy grey door standing ajar, carpeted floor and a whiteboard visible through the gap." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-mobile-door</b>&ldquo;open the door and move inside&rdquo; &middot; episode 26, t&nbsp;=&nbsp;23&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-u850-bag-place.jpg"
+                                         alt="Wrist camera: the gripper closes on the folded handles of a woven jute bag." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>u850-bag-place</b>&ldquo;pick up the bag on the ground and place it on the table&rdquo; &middot; episode 89, t&nbsp;=&nbsp;22&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-plate-croissant.jpg"
+                                         alt="Wrist camera: the gripper is centred over a croissant on a dark wooden table, an empty green plate beside it." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-plate-croissant</b>&ldquo;move the croissant to the empty plate&rdquo; &middot; episode 47, t&nbsp;=&nbsp;14&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-u850-fridge-open.jpg"
+                                         alt="Wrist camera: the gripper grips the edge of an opened white refrigerator door; an open laboratory with benches and a second robot lies beyond it." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>u850-fridge-open</b>&ldquo;open the fridge door&rdquo; &middot; episode 21, t&nbsp;=&nbsp;11&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-mobile-bag.jpg"
+                                         alt="Wrist camera: the gripper hovers above a folded brown paper grocery bag lying on the laboratory floor." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-mobile-bag</b>&ldquo;pick up the grocery bag from the ground&rdquo; &middot; episode 45, t&nbsp;=&nbsp;6&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-mobile-place-cup.jpg"
+                                         alt="Wrist camera: the gripper is positioned over a dark cup and a pink bottle standing on a black workbench." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-mobile-place-cup</b>&ldquo;place the blue cup on the table&rdquo; &middot; episode 34, t&nbsp;=&nbsp;6&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-mobile-cup.jpg"
+                                         alt="Wrist camera: the gripper descends toward a dark cup on a slotted black workbench, the laboratory behind it." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-mobile-cup</b>&ldquo;pick up the blue cup from the table&rdquo; &middot; episode 27, t&nbsp;=&nbsp;7&nbsp;s</p>
+                            </li>
+                            <li>
+                                <div class="frame-tile">
+                                    <img src="../../../assets/img/blog/sbot-datasets/wrist-base4-mobile-bottle.jpg"
+                                         alt="Wrist camera: the gripper closes on a green sports bottle with an orange cap standing on a wooden table." width="560" height="420" loading="lazy" decoding="async">
+                                </div>
+                                <p class="frame-label"><b>base4-mobile-bottle</b>&ldquo;pick up the green bottle from the table&rdquo; &middot; episode 30, t&nbsp;=&nbsp;6&nbsp;s</p>
+                            </li>
+                        </ul>
+                        <figcaption>
+                            <b>Figure R4 &mdash; ten tasks, one wrist frame each.</b> A representative
+                            frame from a median-length successful episode of each dataset, sampled
+                            partway through the episode. Objects are ordinary and cluttered rather
+                            than staged: a jute bag, a paper grocery bag, drink cans on a fridge
+                            shelf, a croissant on a dining table.
+                            <span class="figure-source">Source: frames decoded from the
+                            <code>observation.images.wrist</code> video of each dataset at the
+                            episode and offset noted under each tile.</span>
+                        </figcaption>
+                    </figure>
+                    <h2 id="density">Annotation density</h2>
+
+                    <p>
+                        Subtask counts per episode, and the size of each dataset's subtask-label
+                        vocabulary. The vocabulary column is not a proxy for task difficulty &mdash;
+                        it varies far more than subtask count does; see
+                        <a href="#variation">the next section</a>.
+                    </p>
+<figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 536" width="900" height="536" role="img" aria-labelledby="t62171 d79848" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"><title id="t62171">Distribution of subtask count per episode, by dataset</title><desc id="d79848">Stacked horizontal bars. For each dataset the bar shows what fraction of its episodes were segmented into 0 through 8 subtasks. Import-route repositories average 4.3 to 6.2 spans per episode; generation-route repositories average 1.9 to 3.6; mixed base4-mobile-door averages 5.8. Across all 1,499 episodes the ten datasets carry 6,882 spans, so processing route confounds comparisons with task complexity.</desc>
+                            <text x="0" y="17" font-size="13" font-weight="600" fill="#0f172a">Subtasks per episode</text>
+                            <text x="0" y="36" font-size="12" fill="#64748b">share of each dataset’s episodes, by number of subtask spans in <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">language_persistent</tspan></text>
+                            <rect x="232" y="56" width="14" height="11" rx="2" fill="#e2e8f0"/>
+                            <text x="250" y="65" font-size="10.5" fill="#64748b">0</text>
+                            <rect x="268" y="56" width="14" height="11" rx="2" fill="#ccfbf1"/>
+                            <text x="286" y="65" font-size="10.5" fill="#64748b">1</text>
+                            <rect x="304" y="56" width="14" height="11" rx="2" fill="#99f6e4"/>
+                            <text x="322" y="65" font-size="10.5" fill="#64748b">2</text>
+                            <rect x="340" y="56" width="14" height="11" rx="2" fill="#5eead4"/>
+                            <text x="358" y="65" font-size="10.5" fill="#64748b">3</text>
+                            <rect x="376" y="56" width="14" height="11" rx="2" fill="#2dd4bf"/>
+                            <text x="394" y="65" font-size="10.5" fill="#64748b">4</text>
+                            <rect x="412" y="56" width="14" height="11" rx="2" fill="#14b8a6"/>
+                            <text x="430" y="65" font-size="10.5" fill="#64748b">5</text>
+                            <rect x="448" y="56" width="14" height="11" rx="2" fill="#0d9488"/>
+                            <text x="466" y="65" font-size="10.5" fill="#64748b">6</text>
+                            <rect x="484" y="56" width="14" height="11" rx="2" fill="#0f766e"/>
+                            <text x="502" y="65" font-size="10.5" fill="#64748b">7</text>
+                            <rect x="520" y="56" width="14" height="11" rx="2" fill="#115e59"/>
+                            <text x="538" y="65" font-size="10.5" fill="#64748b">8</text>
+                            <text x="558" y="65" font-size="10.5" fill="#64748b">subtasks</text>
+                            <text x="222" y="98" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-clean-table</text>
+                            <rect x="232.0" y="86" width="1.95" height="16" fill="#e2e8f0"/>
+                            <rect x="233.9" y="86" width="140.38" height="16" fill="#14b8a6"/>
+                            <rect x="374.3" y="86" width="1.95" height="16" fill="#0d9488"/>
+                            <rect x="376.3" y="86" width="243.72" height="16" fill="#0f766e"/>
+                            <rect x="232" y="86" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="98" font-size="11" fill="#64748b" text-anchor="end">mean 6.2 &#183; 7 distinct labels</text>
+                            <text x="222" y="136" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-bag-place</text>
+                            <rect x="232.0" y="124" width="7.76" height="16" fill="#14b8a6"/>
+                            <rect x="239.8" y="124" width="378.30" height="16" fill="#0d9488"/>
+                            <rect x="618.1" y="124" width="1.94" height="16" fill="#115e59"/>
+                            <rect x="232" y="124" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="136" font-size="11" fill="#64748b" text-anchor="end">mean 6.0 &#183; 7 distinct labels</text>
+                            <text x="222" y="174" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-drink</text>
+                            <rect x="232.0" y="162" width="1.55" height="16" fill="#e2e8f0"/>
+                            <rect x="233.6" y="162" width="4.66" height="16" fill="#2dd4bf"/>
+                            <rect x="238.2" y="162" width="51.22" height="16" fill="#14b8a6"/>
+                            <rect x="289.4" y="162" width="329.02" height="16" fill="#0d9488"/>
+                            <rect x="618.4" y="162" width="1.55" height="16" fill="#0f766e"/>
+                            <rect x="232" y="162" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="174" font-size="11" fill="#64748b" text-anchor="end">mean 5.8 &#183; 9 distinct labels</text>
+                            <text x="222" y="212" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-door</text>
+                            <rect x="232.0" y="200" width="3.88" height="16" fill="#5eead4"/>
+                            <rect x="235.9" y="200" width="1.94" height="16" fill="#2dd4bf"/>
+                            <rect x="237.8" y="200" width="83.42" height="16" fill="#14b8a6"/>
+                            <rect x="321.2" y="200" width="283.24" height="16" fill="#0d9488"/>
+                            <rect x="604.5" y="200" width="7.76" height="16" fill="#0f766e"/>
+                            <rect x="612.2" y="200" width="7.76" height="16" fill="#115e59"/>
+                            <rect x="232" y="200" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="212" font-size="11" fill="#64748b" text-anchor="end">mean 5.8 &#183; 42 distinct labels</text>
+                            <text x="222" y="250" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-plate-croissant</text>
+                            <rect x="232.0" y="238" width="285.06" height="16" fill="#2dd4bf"/>
+                            <rect x="517.1" y="238" width="91.06" height="16" fill="#14b8a6"/>
+                            <rect x="608.1" y="238" width="11.88" height="16" fill="#0d9488"/>
+                            <rect x="232" y="238" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="250" font-size="11" fill="#64748b" text-anchor="end">mean 4.3 &#183; 8 distinct labels</text>
+                            <text x="222" y="288" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">u850-fridge-open</text>
+                            <rect x="232.0" y="276" width="19.40" height="16" fill="#99f6e4"/>
+                            <rect x="251.4" y="276" width="178.48" height="16" fill="#5eead4"/>
+                            <rect x="429.9" y="276" width="131.92" height="16" fill="#2dd4bf"/>
+                            <rect x="561.8" y="276" width="54.32" height="16" fill="#14b8a6"/>
+                            <rect x="616.1" y="276" width="3.88" height="16" fill="#0d9488"/>
+                            <rect x="232" y="276" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="288" font-size="11" fill="#64748b" text-anchor="end">mean 3.6 &#183; 77 distinct labels</text>
+                            <text x="222" y="326" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bag</text>
+                            <rect x="232.0" y="314" width="7.76" height="16" fill="#ccfbf1"/>
+                            <rect x="239.8" y="314" width="170.72" height="16" fill="#99f6e4"/>
+                            <rect x="410.5" y="314" width="190.12" height="16" fill="#5eead4"/>
+                            <rect x="600.6" y="314" width="19.40" height="16" fill="#2dd4bf"/>
+                            <rect x="232" y="314" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="326" font-size="11" fill="#64748b" text-anchor="end">mean 2.6 &#183; 27 distinct labels</text>
+                            <text x="222" y="364" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-cup</text>
+                            <rect x="232.0" y="352" width="26.63" height="16" fill="#ccfbf1"/>
+                            <rect x="258.6" y="352" width="167.37" height="16" fill="#99f6e4"/>
+                            <rect x="426.0" y="352" width="155.96" height="16" fill="#5eead4"/>
+                            <rect x="582.0" y="352" width="30.43" height="16" fill="#2dd4bf"/>
+                            <rect x="612.4" y="352" width="7.61" height="16" fill="#14b8a6"/>
+                            <rect x="232" y="352" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="364" font-size="11" fill="#64748b" text-anchor="end">mean 2.5 &#183; 65 distinct labels</text>
+                            <text x="222" y="402" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-place-cup</text>
+                            <rect x="232.0" y="390" width="36.21" height="16" fill="#ccfbf1"/>
+                            <rect x="268.2" y="390" width="258.67" height="16" fill="#99f6e4"/>
+                            <rect x="526.9" y="390" width="64.67" height="16" fill="#5eead4"/>
+                            <rect x="591.5" y="390" width="12.93" height="16" fill="#2dd4bf"/>
+                            <rect x="604.5" y="390" width="7.76" height="16" fill="#14b8a6"/>
+                            <rect x="612.2" y="390" width="7.76" height="16" fill="#0d9488"/>
+                            <rect x="232" y="390" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="402" font-size="11" fill="#64748b" text-anchor="end">mean 2.3 &#183; 104 distinct labels</text>
+                            <text x="222" y="440" font-size="12" fill="#334155" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">base4-mobile-bottle</text>
+                            <rect x="232.0" y="428" width="100.88" height="16" fill="#ccfbf1"/>
+                            <rect x="332.9" y="428" width="244.44" height="16" fill="#99f6e4"/>
+                            <rect x="577.3" y="428" width="38.80" height="16" fill="#5eead4"/>
+                            <rect x="616.1" y="428" width="3.88" height="16" fill="#2dd4bf"/>
+                            <rect x="232" y="428" width="388" height="16" fill="none" stroke="#e2e8f0"/>
+                            <text x="890" y="440" font-size="11" fill="#64748b" text-anchor="end">mean 1.9 &#183; 12 distinct labels</text>
+                            <text x="232" y="506" font-size="11" fill="#64748b">6,882 subtask spans over 1,499 episodes (mean 4.6 per episode).</text>
+                            <text x="232" y="522" font-size="11" fill="#64748b">Label vocabulary varies widely between datasets; see the variation section.</text>
+                            </svg>
+                        </div>
+                        <figcaption>
+                            <b>Figure R5 &mdash; span density and label vocabulary vary across the
+                            collection.</b> The four long-horizon datasets sit at five to seven
+                            subtasks per episode; the short mobile-manipulation datasets sit at two
+                            to three. The vocabulary count is strongly confounded by annotation source:
+                            <code>base4-mobile-place-cup</code> uses 104 distinct subtask strings
+                            across only 342 spans, while <code>u850-bag-place</code> uses 7 across
+                            1,198. Treat the labels as free text, not as a closed vocabulary &mdash;
+                            and see <a href="#variation">the next section</a> for how far this
+                            ratio varies across the collection. The generation-route repositories occupy the
+                            high-rewording group, import-route repositories occupy the low group,
+                            and the mixed door repository lies between them.
+                            <span class="figure-source">Source: every <code>subtask</code> entry in
+                            <code>language_persistent</code>, parsed from every data shard of all ten
+                            datasets &mdash; 6,882 spans over 1,499 episodes.</span>
+                        </figcaption>
+                    </figure>
+                    <h2 id="variation">Variation across the collection</h2>
+
+                    <p>
+                        The ten datasets share a format, but their annotation is not uniform. Two
+                        properties of the published data vary widely and are worth knowing about
+                        before you train on the labels or compare datasets to each other.
+                    </p>
+                    <div class="data-table-wrap" tabindex="0">
+                        <table class="data-table" style="min-width:0">
+                            <caption>Two measures of annotation variation, ordered by label reuse.
+                                Label reuse uses all 6,882 spans; tick percentages use 5,385 internal
+                                span starts, excluding the first start in each of the 1,497 annotated
+                                episodes.</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dataset</th>
+                                    <th scope="col" class="num">Distinct labels per span</th>
+                                    <th scope="col" class="num">Internal starts on a 0.1&nbsp;s tick</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="code">u850-fridge-drink</th>
+                                    <td class="num">0.006</td>
+                                    <td class="num">18.9%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">u850-bag-place</th>
+                                    <td class="num">0.006</td>
+                                    <td class="num">19.9%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-clean-table</th>
+                                    <td class="num">0.006</td>
+                                    <td class="num">20.2%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-plate-croissant</th>
+                                    <td class="num">0.019</td>
+                                    <td class="num">21.7%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-mobile-door</th>
+                                    <td class="num">0.036</td>
+                                    <td class="num">30.6%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-mobile-bottle</th>
+                                    <td class="num">0.065</td>
+                                    <td class="num">66.3%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-mobile-bag</th>
+                                    <td class="num">0.105</td>
+                                    <td class="num">47.8%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">u850-fridge-open</th>
+                                    <td class="num">0.214</td>
+                                    <td class="num">70.8%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-mobile-cup</th>
+                                    <td class="num">0.250</td>
+                                    <td class="num">71.5%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">base4-mobile-place-cup</th>
+                                    <td class="num">0.304</td>
+                                    <td class="num">53.1%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="table-note">
+                        <strong>Label reuse.</strong> Distinct subtask strings divided by total
+                        spans. Four datasets reuse a small fixed vocabulary (0.006&ndash;0.019), five
+                        re-word far more freely (0.065&ndash;0.304), and
+                        <code>base4-mobile-door</code> falls between them at 0.036. At the far end,
+                        <code>base4-mobile-place-cup</code> uses 104 distinct strings across 342
+                        spans. <strong>Timing granularity.</strong> Every span start lands on a frame
+                        (a multiple of 0.02&nbsp;s at 50&nbsp;Hz). In some datasets about 20% of
+                        internal starts also fall on a round tenth of a second &mdash; the fraction
+                        expected for uniformly distributed positions on a 0.02&nbsp;s grid &mdash;
+                        while in others it is 48&ndash;72%, which is what a coarser one-decimal
+                        timing convention snapped to frames would look like.
+                    </p>
+
+                    <p>
+                        The two measures rank the datasets similarly, and that ranking largely follows
+                        the recorded processing route: the four import-route repositories occupy the
+                        low-vocabulary, roughly 20% tick group; the five generation-route repositories occupy
+                        the higher group; and mixed <code>base4-mobile-door</code> lies between them.
+                        This association makes provenance a clear confound, but it does not isolate
+                        generation from differences in task, source data or preparation. Treat subtask
+                        labels as free text, do not assume a single timing convention, and check any
+                        desired label vocabulary per dataset.
+                    </p>
+<h2 id="access">Getting and using the data</h2>
+
+                    <p>
+                        All ten are public and ungated, so no token is needed to read them. The
+                        whole collection is 54.9&nbsp;GB, of which 54.1&nbsp;GB is video &mdash; the
+                        Parquet shards come to only 744&nbsp;MB. If you want the state, actions and
+                        language layer but not the pixels, pull just <code>data/</code> and
+                        <code>meta/</code> and you will move roughly 1.4% of the bytes.
+                    </p>
+
+                    <h3>Metadata and annotations only</h3>
+
+                    <pre><code>pip install huggingface_hub pandas pyarrow
+
+hf download L5vel/base4-plate-croissant-eef-merged-v30 \
+    --repo-type dataset \
+    --include 'meta/**' --include 'data/**' \
+    --local-dir ./plate-croissant</code></pre>
+
+                    <p>
+                        That is 34&nbsp;MB for <code>base4-plate-croissant</code> against
+                        2.5&nbsp;GB for the full repository. Recovering the segmentation needs only
+                        the first frame of each episode, because the persistent track is broadcast
+                        across the whole episode:
+                    </p>
+
+                    <pre><code>import ast, glob, pandas as pd
+
+frames = pd.concat(pd.read_parquet(p) for p in glob.glob("plate-croissant/data/*/*.parquet"))
+first  = frames.sort_values(["episode_index", "frame_index"]).groupby("episode_index").head(1)
+
+def subtasks(row):
+    msgs = [ast.literal_eval(m) if isinstance(m, str) else m
+            for m in row["language_persistent"]]
+    return sorted((m["timestamp"], m["content"])
+                  for m in msgs if m["style"] == "subtask")
+
+for _, row in first.iterrows():
+    print(int(row["episode_index"]), subtasks(row))</code></pre>
+
+                    <p>
+                        Entries may arrive as Python-literal strings or as decoded structs depending
+                        on the reader, which is why the snippet handles both. Sort by
+                        <code>timestamp</code> rather than trusting list order.
+                    </p>
+
+                    <h3 id="language-storage">How a subtask span is stored</h3>
+
+                    <p>
+                        In the <a href="../index.html#problem">table-cleaning example</a>,
+                        &ldquo;move the green towel towards the mess&rdquo; starts at 3.94 seconds
+                        and the next subtask starts at 9.00 seconds.
+                    </p>
+
+                    <p>
+                        The example is episode 104 of <code>base4-clean-table-eef-merged-v30</code>.
+                        Its subtask labels were imported from existing annotations; the records do
+                        not establish their original authorship or human verification. See the
+                        <a href="#provenance">provenance note</a>. The embedded clip in the post
+                        is a 25 fps web re-encode of a stream declared at 50 Hz in the dataset.
+                    </p>
+
+                    <p>
+                        In the released Parquet row, one of those annotations is stored as this object
+                        inside <code>language_persistent</code>:
+                    </p>
+
+<pre><code>{
+  "role": "assistant",
+  "content": "move the green towel towards the mess",
+  "style": "subtask",
+  "timestamp": 3.940000057220459,
+  "camera": null,
+  "tool_calls": null
+}</code></pre>
+
+                    <p>
+                        The same persistent message list is attached to every frame in the episode.
+                        A reader reconstructs the span by taking this start time and the next subtask
+                        start, 9.00&nbsp;s, giving the half-open interval [3.94, 9.00)&nbsp;s.
+                    </p>
+
+                    <h3>The full dataset through LeRobot</h3>
+
+                    <pre><code>pip install 'lerobot[dataset]'
+
+from lerobot.datasets.lerobot_dataset import LeRobotDataset
+
+ds = LeRobotDataset("L5vel/u850-bag-place-eef-merged-v30")
+print(ds.meta.robot_type, ds.meta.fps)          # u850 50
+print(ds.meta.total_episodes, ds.meta.total_frames)
+print(ds.meta.camera_keys)                      # the three video streams
+print(ds.meta.has_language_columns)             # True
+
+sample = ds[0]
+sample["observation.state"]        # 10-D: joint1..joint6, gripper, base_x, base_y, base_yaw
+sample["observation.eef_state"]    # 13-D: Cartesian pose, gripper, base pose
+sample["observation.images.wrist"] # decoded frame</code></pre>
+
+                    <div class="callout">
+                        <p class="callout-title">Practical notes</p>
+                        <ul>
+                            <li><strong>Disk.</strong> Budget the full repository size plus working
+                                room. <code>u850-fridge-drink</code> alone is 18.6&nbsp;GB.</li>
+                            <li><strong>Profile video loading.</strong> Decoding three 640&times;480
+                                streams at 50&nbsp;Hz can be expensive. Profile your loading pipeline
+                                before choosing temporal subsampling or camera selection; we have not
+                                benchmarked decoding against network transfer.</li>
+                            <li><strong>These are v3.0.</strong> Tooling written for the v2.1 layout
+                                will not read them; convert in the other direction, or use a LeRobot
+                                release that speaks v3.0.</li>
+                            <li><strong>Check <code>task_index</code>.</strong> Nine datasets have a
+                                single task string, but <code>base4-mobile-place-cup</code> has two.
+                                Read the per-frame index rather than assuming.</li>
+                            <li><strong>Use <code>success</code> before training.</strong> Five
+                                episodes across the collection are flagged unsuccessful; they are
+                                shipped, not removed.</li>
+                            <li><strong><code>correction</code> is a per-frame boolean</strong>
+                                intended to mark teleoperator intervention. All released values are
+                                false, so this field provides no intervention segments to filter.</li>
+                        </ul>
+                    </div>
+
+                    <h2 id="caveats">Known limitations of the release</h2>
+
+                    <p>
+                        Stated plainly, because they change how the data should be used:
+                    </p>
+
+                    <ul>
+                        <li><strong>The dataset cards are LeRobot boilerplate.</strong> All ten still
+                            carry &ldquo;[More Information Needed]&rdquo; for homepage, paper and
+                            BibTeX, and the &ldquo;visualize this dataset&rdquo; badge on each card
+                            points at a <code>l5vel-peng/&hellip;</code> path rather than the
+                            published <code>L5vel/&hellip;</code> one. The <code>meta/</code>
+                            directory is the authority, not the card prose.</li>
+                        <li><strong>The task string and the subtask text can disagree.</strong> In
+                            episode 82 of <code>base4-mobile-cup</code> the task string says
+                            &ldquo;blue cup&rdquo; while the subtask text says &ldquo;black
+                            cup&rdquo;. Check the video and both fields when object identity matters.
+                            Label wording and timing
+                            granularity also vary widely between datasets; see
+                            <a href="#variation">variation across the collection</a>.</li>
+                        <li><strong>Boundary agreement has not been independently measured for this
+                            release.</strong> No independent repeat annotation or human-validation
+                            record is included for the stored spans. There is therefore no measured
+                            agreement floor for import-route references and no measured human-review
+                            accuracy for the generation-route portion. See
+                            <a href="../index.html#evaluation">the evaluation section</a> for how accurate this
+                            kind of boundary placement has and has not been shown to be.</li>
+                        <li><strong><code>language_events</code> is empty.</strong> The column exists
+                            with the right dtype in all ten, but nothing was written to it. If your
+                            loader expects interjections, speech or VQA rows, it will find none.</li>
+                        <li><strong>Two episodes carry no subtask spans.</strong> One in
+                            <code>base4-clean-table</code> and one in <code>u850-fridge-drink</code>
+                            have an empty subtask track. Handle the empty case rather than
+                            assuming at least one span per episode.</li>
+                        <li><strong>No held-out split is defined.</strong> Every dataset declares a
+                            single <code>train</code> split covering all episodes. Make your own,
+                            and make it by episode.</li>
+                        <li><strong>People appear in the footage.</strong> These were recorded in a
+                            working laboratory with the teleoperator and colleagues in frame. Treat
+                            them accordingly.</li>
+                    </ul>
+
+                    <h2 id="calibration">Calibration protocol</h2>
+
+                    <p>
+                        L5VEL and RH20T use the same evaluator. The repository retains
+                        <code>corpus_a</code> and <code>corpus_b</code> as internal keys for L5VEL and
+                        RH20T, respectively; those names are not separate methods. For each task, the
+                        preparer sorts SHA-256 hashes of
+                        <code>1729:task:source_id:local_episode</code> and reserves the first ten
+                        distinct annotated trajectories. This choice is fixed before model inference
+                        and does not inspect label contents or prediction quality. The ten trajectories
+                        are put in a seed-only dataset; every other trajectory is put in evaluation-only
+                        components. A failed seed is recorded and never replaced.
+                    </p>
+
+                    <p>
+                        Each camera configuration uses those same ten identities but makes its own
+                        predictions and fits its own parameters. Fits are grouped within task by subtask
+                        count, and require at least three complete predictions with the supplied labels
+                        in the right order. The study uses count scope, so it assumes the first, second,
+                        and later positions represent comparable task phases even when their wording
+                        differs. With predicted internal boundary <i>p</i><sub>ij</sub>, reference
+                        boundary <i>g</i><sub>ij</sub>, and stitched predicted extent
+                        <i>T</i><sub>i</sub>, the position correction is:
+                    </p>
+
+<pre><code>offset_j = median_i((p_ij - g_ij) / T_i)</code></pre>
+
+                    <p>
+                        The fitter also stores median reference segment durations divided by
+                        <i>T</i><sub>i</sub>. Leave-one-out scoring on the retained seeds selects a
+                        duration weight from <code>{0, 0.25, 0.5, 1, 2, 4}</code>. The fit is recommended
+                        only when this check gains at least 0.03 temporal IoU and the raw first-boundary
+                        mean absolute error is at least 1.5&nbsp;s. Because the same folds select the
+                        weight and estimate its gain, this check is optimistic rather than an independent
+                        evaluation.
+                    </p>
+
+                    <p>
+                        Accepted parameters are frozen. On a held-out prediction, a dynamic program on
+                        a 0.1-second grid shifts all internal boundaries together, balancing corrected
+                        model times against the duration pattern while keeping positions nondecreasing.
+                        The duration fractions are not renormalized by the calibrator, and a later
+                        strict-order cleanup can reject colliding labels. Calibration cannot restore a
+                        label omitted by the model. Unsupported subtask counts, rejected fits and failed
+                        calibration attempts keep the matching raw prediction. Single-camera calibration
+                        applied to 507 of 757 L5VEL trajectories and 659 of 1,305 RH20T trajectories;
+                        every fallback remains in the published averages. The public
+                        <a href="https://github.com/l5vel/lerobot-align/blob/main/evaluation/calibration_protocol.md">calibration protocol</a>
+                        documents the identity maps, hashes and runtime skip reasons.
+                    </p>
+
+                    <h2 id="metrics">Evaluation metric definitions</h2>
+
+                    <p>
+                        The task the <a href="../index.html#evaluation">evaluation</a> scores
+                        is fixed-label alignment: given an episode's video, the task string, the
+                        episode duration and an ordered list of subtask labels with no timestamps,
+                        emit exactly that many spans, in order.
+                    </p>
+<div class="data-table-wrap" tabindex="0">
+                        <table class="data-table" style="min-width:0">
+                            <caption>Metric definitions, as implemented in the public
+                                <code>src/lerobot_align/alignment_metrics.py</code> and
+                                <code>evaluation/scripts/score_alignment.py</code>.</caption>
+                            <thead>
+                                <tr><th scope="col">Metric</th><th scope="col">Better</th><th scope="col">Definition</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="code">macro_temporal_iou</th><td>higher</td>
+                                    <td>Mean over supplied labels of the temporal IoU between the predicted span and its reference span. The scorer stitches each placed segmentation to the supplied episode start and end, which can increase IoU without those endpoints being predicted. A missing label still scores 0.</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">b_hit@3</th><td>higher</td>
+                                    <td>Fraction of the <em>internal</em> boundaries placed within 3&nbsp;seconds of truth. A missing boundary counts as a miss, not as a dropped sample. The 1/3/5-second thresholds are hard-coded, not a command-line knob.</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">placed_fraction</th><td>higher</td>
+                                    <td>Fraction of supplied labels that received a span at all. A primary metric, not a diagnostic.</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="code">boundary_mae_placed</th><td>lower</td>
+                                    <td>Mean absolute boundary error over <em>placed</em> boundaries only. It improves when a configuration drops the hard cases, so it is never reported without <code>placed_fraction</code> beside it.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2 id="alignment-study">Fixed-label alignment: study and full results</h2>
+
+                    <p>
+                        Our 8 September 2026 study evaluated only the fixed-label timing stage.
+                        Here, one LeRobot episode is one evaluation trajectory. Each configuration
+                        received the task, episode duration and correct ordered subtask
+                        labels, without their boundary times. It then had to return one span per label.
+                        This does not test whether the tool can discover the right labels. Descriptions,
+                        paraphrases, plans, memory, VQA and interjections were also outside the study.
+                    </p>
+
+                    <p>
+                        Both evaluation sets used Qwen3.8-27B, two sampled frames per second, a
+                        300-frame limit for the matched high-budget configurations, temperature 0.2,
+                        the same scorer and the same task-level aggregation. We fixed ten calibration
+                        trajectories per task before fitting and evaluated only on the remainder:
+                        757 trajectories in four L5VEL semantic task groups, and 1,305 trajectories in
+                        39 task groups from the RH20T portion of
+                        <a href="https://huggingface.co/datasets/InternRobotics/RoboInter-Data">RoboInter-Data</a>.
+                        The L5VEL evaluation combines 16 historical source datasets or configurations
+                        into those four task groups; it is not an evaluation of all ten repositories
+                        released with the post. The L5VEL evaluation uses only import-route source
+                        references; generation-route components in the released collection are excluded.
+                        It therefore does not evaluate the quality of those generated subtasks or show
+                        whether any released annotation improves downstream training.
+                        RoboInter&rsquo;s public tooling describes ChatGPT preannotation followed by human
+                        clip segmentation, cross-checking and sampling-based validation, but it does
+                        not report annotator agreement or detailed acceptance statistics in the
+                        <a href="https://github.com/InternRobotics/RoboInter/blob/main/RoboInterTools/README.md">published workflow</a>.
+                    </p>
+
+                    <p>
+                        Temporal intersection over union, or temporal IoU, measures the overlap between
+                        a predicted span and its reference, divided by the time covered by either span.
+                        Boundary hit rate measures the fraction of internal transitions placed within
+                        three seconds of the reference. The fixed episode start and end contribute to
+                        IoU but are excluded from boundary hit rate. Scores are averaged within each
+                        task and then give every task equal weight.
+                    </p>
+
+
+
+                <div>
+                    <div class="data-table-wrap" tabindex="0">
+                        <table class="data-table">
+                            <caption>Calibration contrasts in the unified study. Temporal-IoU gains
+                                compare scoreable pairs; 95% intervals resample task groups.</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Evaluation set</th>
+                                    <th scope="col">Video input</th>
+                                    <th scope="col" class="num">tIoU before</th>
+                                    <th scope="col" class="num">tIoU after</th>
+                                    <th scope="col" class="num">Paired gain (95% CI)</th>
+                                    <th scope="col" class="num">Boundaries within 3 s</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">L5VEL, 4 task groups</th>
+                                    <td>single camera</td>
+                                    <td class="num">0.513</td>
+                                    <td class="num">0.663</td>
+                                    <td class="num">+0.150 (0.034&ndash;0.230)</td>
+                                    <td class="num">52.1% &rarr; 78.1%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">L5VEL, 4 task groups</th>
+                                    <td>two views</td>
+                                    <td class="num">0.533</td>
+                                    <td class="num">0.687</td>
+                                    <td class="num">+0.155 (0.032&ndash;0.279)</td>
+                                    <td class="num">55.0% &rarr; 78.9%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">RH20T, 39 task groups</th>
+                                    <td>single camera</td>
+                                    <td class="num">0.519</td>
+                                    <td class="num">0.561</td>
+                                    <td class="num">+0.042 (0.021&ndash;0.065)</td>
+                                    <td class="num">38.3% &rarr; 45.7%</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">RH20T, 39 task groups</th>
+                                    <td>two views</td>
+                                    <td class="num">0.520</td>
+                                    <td class="num">0.566</td>
+                                    <td class="num">+0.047 (0.026&ndash;0.070)</td>
+                                    <td class="num">41.3% &rarr; 47.3%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
+                    <p>
+                        A missing predicted span scores zero IoU and its boundary counts as a miss.
+                        This is what &ldquo;labels placed&rdquo; measures in the full results. It does not mean
+                        that the tool deletes a supplied reference label from the source dataset. A model call can
+                        omit a label or return an invalid timestamp, and strict ordering cleanup can
+                        reject a colliding span. Failed outputs stay in the averages with zero placement.
+                        A small repeated-label ambiguity made 23 RH20T configuration&ndash;trajectory rows
+                        unscoreable: six for each single-video configuration, four for each two-view
+                        configuration, and three for the 300-frame contact-sheet configuration. Paired
+                        comparisons use only trajectories scoreable for both configurations.
+                    </p>
+
+                    <p>
+                        The chart shows both evaluation sets and all nine configurations:
+                    </p>
+
+                    <figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" role="img" aria-labelledby="evt evd" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif"><title id="evt">Fixed-label alignment accuracy by configuration, on L5VEL and RH20T</title><desc id="evd">Two panels of horizontal bars. The left panel is macro temporal IoU; the right panel is boundary hit rate within 3 seconds. Each of nine configurations shows task-macro means over its configuration-specific scoreable trajectories, including failure penalties. L5VEL uses 757 trajectories for every bar; RH20T uses 1,299 to 1,305 configuration-trajectory rows depending on the configuration. The three lowest rows are timing controls that do not inspect video. All receive the annotated episode extent and place every supplied label. The seeded relative-position and duration controls learn from the fixed ten-example pool when at least three matching examples exist and otherwise use an equal-duration fallback. Their temporal-IoU point estimates are at or above every VLM configuration on both sets, while their boundary hit rates are similar to calibrated stacked video; this does not establish equivalence.</desc>
+                                                        <text x="0" y="17" font-size="13" font-weight="600" fill="#0f172a">Fixed-label alignment accuracy, nine configurations, two evaluation sets</text>
+                                                        <text x="0" y="36" font-size="12" fill="#64748b">averaged within task, then tasks weighted equally &#183; higher is better on both metrics</text>
+                                                        <rect x="0" y="72" width="13" height="11" rx="2" fill="#0d9488"/>
+                                                        <text x="18" y="81" font-size="10.5" fill="#475569">L5VEL (4 task groups, 757 trajectories)</text>
+                                                        <rect x="430" y="72" width="13" height="11" rx="2" fill="#3b82f6"/>
+                                                        <text x="448" y="81" font-size="10.5" fill="#475569">RH20T (39 tasks; 1,299&ndash;1,305 scoreable per configuration)</text>
+                                                        <text x="250" y="104" font-size="11" font-weight="600" fill="#334155">Macro temporal IoU</text>
+                                                        <line x1="250.0" y1="112" x2="250.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="250.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.00</text>
+                                                        <line x1="320.0" y1="112" x2="320.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="320.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.25</text>
+                                                        <line x1="390.0" y1="112" x2="390.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="390.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.50</text>
+                                                        <line x1="460.0" y1="112" x2="460.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="460.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.75</text>
+                                                        <line x1="530.0" y1="112" x2="530.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="530.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">1.00</text>
+                                                        <text x="600" y="104" font-size="11" font-weight="600" fill="#334155">Boundary hit rate @3 s</text>
+                                                        <line x1="600.0" y1="112" x2="600.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="600.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.00</text>
+                                                        <line x1="670.0" y1="112" x2="670.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="670.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.25</text>
+                                                        <line x1="740.0" y1="112" x2="740.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="740.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.50</text>
+                                                        <line x1="810.0" y1="112" x2="810.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="810.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">0.75</text>
+                                                        <line x1="880.0" y1="112" x2="880.0" y2="482" stroke="#e2e8f0"/>
+                                                        <text x="880.0" y="514" font-size="10" fill="#64748b" text-anchor="middle">1.00</text>
+                                                        <text x="236" y="129" font-size="11.5" fill="#334155" text-anchor="end">60-frame contact sheet</text>
+                                                        <text x="236" y="143" font-size="10" fill="#b45309" text-anchor="end">shipped default</text>
+                                                        <rect x="250" y="118" width="121.8" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="133" width="105.6" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="377.8" y="128" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.435</text>
+                                                        <text x="361.6" y="143" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.377</text>
+                                                        <rect x="600" y="118" width="117.6" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="133" width="74.5" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="723.6" y="128" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.420</text>
+                                                        <text x="680.5" y="143" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.266</text>
+                                                        <text x="236" y="171" font-size="11.5" fill="#334155" text-anchor="end">300-frame contact sheet</text>
+                                                        <rect x="250" y="160" width="114.8" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="175" width="91.6" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="370.8" y="170" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.410</text>
+                                                        <text x="347.6" y="185" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.327</text>
+                                                        <rect x="600" y="160" width="115.4" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="175" width="67.2" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="721.4" y="170" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.412</text>
+                                                        <text x="673.2" y="185" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.240</text>
+                                                        <text x="236" y="213" font-size="11.5" fill="#334155" text-anchor="end">single native video</text>
+                                                        <rect x="250" y="202" width="143.6" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="217" width="145.3" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="399.6" y="212" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.513</text>
+                                                        <text x="401.3" y="227" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.519</text>
+                                                        <rect x="600" y="202" width="145.9" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="217" width="107.2" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="751.9" y="212" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.521</text>
+                                                        <text x="713.2" y="227" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.383</text>
+                                                        <text x="236" y="255" font-size="11.5" fill="#334155" text-anchor="end">single video + calibration</text>
+                                                        <rect x="250" y="244" width="185.6" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="259" width="157.1" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="441.6" y="254" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.663</text>
+                                                        <text x="413.1" y="269" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.561</text>
+                                                        <rect x="600" y="244" width="218.7" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="259" width="128.0" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="824.7" y="254" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.781</text>
+                                                        <text x="734.0" y="269" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.457</text>
+                                                        <text x="236" y="297" font-size="11.5" fill="#334155" text-anchor="end">two-view stacked video</text>
+                                                        <rect x="250" y="286" width="149.2" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="301" width="145.6" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="405.2" y="296" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.533</text>
+                                                        <text x="401.6" y="311" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.520</text>
+                                                        <rect x="600" y="286" width="154.0" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="301" width="115.6" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="760.0" y="296" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.550</text>
+                                                        <text x="721.6" y="311" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.413</text>
+                                                        <text x="236" y="339" font-size="11.5" fill="#334155" text-anchor="end">stacked video + calibration</text>
+                                                        <text x="236" y="353" font-size="10" fill="#b45309" text-anchor="end">best model config</text>
+                                                        <rect x="250" y="328" width="192.4" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="343" width="158.5" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="448.4" y="338" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.687</text>
+                                                        <text x="414.5" y="353" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.566</text>
+                                                        <rect x="600" y="328" width="220.9" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="343" width="132.4" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="826.9" y="338" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.789</text>
+                                                        <text x="738.4" y="353" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.473</text>
+                                                        <rect x="0" y="364" width="900" height="36" fill="#fffbeb"/>
+                                                        <text x="236" y="381" font-size="11.5" fill="#334155" text-anchor="end">equal-duration split (no video)</text>
+                                                        <rect x="250" y="370" width="123.2" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="385" width="141.7" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="379.2" y="380" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.440</text>
+                                                        <text x="397.7" y="395" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.506</text>
+                                                        <rect x="600" y="370" width="93.8" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="385" width="80.4" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="699.8" y="380" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.335</text>
+                                                        <text x="686.4" y="395" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.287</text>
+                                                        <rect x="0" y="406" width="900" height="36" fill="#fffbeb"/>
+                                                        <text x="236" y="423" font-size="11.5" fill="#334155" text-anchor="end">relative-position template (no video)</text>
+                                                        <rect x="250" y="412" width="194.6" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="427" width="165.5" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="450.6" y="422" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.695</text>
+                                                        <text x="421.5" y="437" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.591</text>
+                                                        <rect x="600" y="412" width="217.8" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="427" width="130.8" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="823.8" y="422" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.778</text>
+                                                        <text x="736.8" y="437" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.467</text>
+                                                        <rect x="0" y="448" width="900" height="36" fill="#fffbeb"/>
+                                                        <text x="236" y="465" font-size="11.5" fill="#334155" text-anchor="end">duration template (no video)</text>
+                                                        <rect x="250" y="454" width="194.9" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="250" y="469" width="165.8" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="450.9" y="464" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.696</text>
+                                                        <text x="421.8" y="479" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.592</text>
+                                                        <rect x="600" y="454" width="218.4" height="12" rx="2" fill="#0d9488"/>
+                                                        <rect x="600" y="469" width="131.9" height="12" rx="2" fill="#3b82f6"/>
+                                                        <text x="824.4" y="464" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.780</text>
+                                                        <text x="737.9" y="479" font-size="10" fill="#475569" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0.471</text>
+                                                        <text x="2" y="536" font-size="11" fill="#64748b">The two seeded timing templates have temporal IoU point estimates at or above every model configuration.</text>
+                                                        <text x="0" y="552" font-size="11" fill="#64748b">Source: unified L5VEL/RH20T alignment study, 8 September 2026. Result artifacts are not part of the source release.</text>
+                                                        </svg>
+                        </div>
+                        <table class="visually-hidden">
+                            <caption>Values plotted in Figure R6</caption>
+                            <thead><tr><th>Configuration</th><th>L5VEL tIoU</th><th>L5VEL B@3</th><th>RH20T tIoU</th><th>RH20T B@3</th></tr></thead>
+                            <tbody>
+                                <tr><th>60-frame contact sheet</th><td>0.435</td><td>0.420</td><td>0.377</td><td>0.266</td></tr>
+                                <tr><th>300-frame contact sheet</th><td>0.410</td><td>0.412</td><td>0.327</td><td>0.240</td></tr>
+                                <tr><th>Single native video</th><td>0.513</td><td>0.521</td><td>0.519</td><td>0.383</td></tr>
+                                <tr><th>Single video with calibration</th><td>0.663</td><td>0.781</td><td>0.561</td><td>0.457</td></tr>
+                                <tr><th>Two-view stacked video</th><td>0.533</td><td>0.550</td><td>0.520</td><td>0.413</td></tr>
+                                <tr><th>Stacked video with calibration</th><td>0.687</td><td>0.789</td><td>0.566</td><td>0.473</td></tr>
+                                <tr><th>Equal-duration split</th><td>0.440</td><td>0.335</td><td>0.506</td><td>0.287</td></tr>
+                                <tr><th>Relative-position template</th><td>0.695</td><td>0.778</td><td>0.591</td><td>0.467</td></tr>
+                                <tr><th>Duration template</th><td>0.696</td><td>0.780</td><td>0.592</td><td>0.471</td></tr>
+                            </tbody>
+                        </table>
+                        <figcaption>
+                            Figure R6 &mdash; all nine configurations on both evaluation sets. L5VEL
+                            uses 757 scoreable trajectories for every bar. RH20T contains 1,305 unique
+                            held-out trajectories and contributes 1,299&ndash;1,305 scoreable
+                            configuration&ndash;trajectory rows per bar, so direct comparisons use paired rows.
+                            The three shaded rows are timing controls, not model outputs. The lower
+                            two learn from the same ten-example pool as calibration and fall back to
+                            equal-duration timing when fewer than three matching examples are usable
+                            (62 L5VEL and 253 RH20T evaluation trajectories). All three receive the
+                            annotated episode start and end and always place every supplied label.
+                            Bars average trajectories within each task, then weight tasks equally. Failed
+                            model outputs score zero and remain in the averages.
+                        </figcaption>
+                    </figure>
+
+                    <p>
+                        Five findings matter when deciding how to use the tool:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <b>Native video was stronger than contact sheets in these runs.</b> At the
+                            matched 300-frame budget, single-camera video scored 0.513 versus 0.410
+                            for contact sheets on L5VEL, and 0.519 versus 0.327 on RH20T. The paired gains
+                            were 0.103 (95% CI 0.042&ndash;0.183) and 0.192
+                            (0.160&ndash;0.224), and both survived the Holm correction. On RH20T, 4.5%
+                            of video outputs failed or were unscoreable, compared with 28.2% for the
+                            300-frame sheets. The shipped 60-frame sheet result is shown separately in
+                            Figure R6 because its input budget is smaller.
+                        </li>
+                        <li>
+                            <b>Calibration improved timing on both sets.</b> The table above shows gains
+                            of 0.150 and 0.155 on the L5VEL task groups, and 0.042 and 0.047 on RH20T.
+                            Both RH20T effects survived the planned 24-test Holm correction. The larger
+                            L5VEL effects did not: with only four independent task groups, their
+                            uncertainty is much wider than for the 39-task RH20T analysis.
+                        </li>
+                        <li>
+                            <b>The ten examples transfer less reliably on RH20T.</b> Among calibration
+                            groups accepted by the fitter, reference boundary positions varied by about
+                            7.6&ndash;8.0% of episode duration on RH20T, compared with 2.4% on L5VEL.
+                            The calibration-to-evaluation timing shift
+                            was about 4.4&ndash;4.5% on RH20T and 0.9% on L5VEL. An exact copy of a held-out
+                            trajectory&rsquo;s ordered label sequence appeared among the ten examples for only
+                            9.7% of RH20T trajectories, compared with 94.5% on L5VEL. This weaker coverage
+                            and less stable timing are consistent with the smaller RH20T gain; the
+                            study cannot separate task diversity, annotation policy
+                            and camera observability into individual causes.
+                        </li>
+                        <li>
+                            <b>The seeded timing controls matched the best model on temporal IoU.</b>
+                            One control places boundaries at the median relative positions in matching
+                            examples. The other takes their median relative segment durations, normalizes
+                            them to fill the episode and accumulates them. They scored 0.695/0.696 on
+                            L5VEL and 0.591/0.592 on RH20T, compared with 0.687 and 0.566 for calibrated
+                            two-view video. These are temporal-IoU point estimates, not a win on every
+                            metric: on RH20T the calibrated model&rsquo;s three-second boundary hit rate was
+                            0.473, slightly above the duration control&rsquo;s 0.471. The registered comparison
+                            did not establish an overall difference after multiple-test correction.
+                        </li>
+                        <li>
+                            <b>We did not establish a benefit from a second camera view.</b> The controlled
+                            comparison used uncalibrated single- and two-view inputs. The two-view point
+                            estimates were sometimes higher, but the evidence was inconclusive.
+                        </li>
+                    </ul>
+
+                    <p>
+                        The timing controls are deliberately strong. They do not look at video, but they
+                        receive the correct label order and the annotated episode start and end, and they
+                        always return every label. They test whether a vision model contributes more than
+                        the typical timing pattern already present in ten examples. They cannot discover
+                        what happened in a new video and should not be read as complete annotation tools.
+                    </p>
+
+                    <p>
+                        Several limitations make the calibration numbers less clean than we would like.
+                        Calibrated and uncalibrated configurations made separate model calls at
+                        temperature 0.2, so their difference includes response variation as well as the
+                        calibration transform. The RH20T estimates are exploratory because its protocol
+                        was revised after a preliminary null result, with changes expected to help
+                        calibration; they are not an independent confirmation. We also lack a
+                        human-to-human agreement measurement for either set. In addition, the component-wise
+                        median duration fractions are not renormalized: accepted priors sum to
+                        0.972&ndash;0.999 on L5VEL and 0.858&ndash;1.117 on RH20T. The same three to ten
+                        usable seeds select the duration weight and estimate its leave-one-out benefit,
+                        and the fitter&rsquo;s bias gate checks only the first boundary. These choices can make
+                        a small-sample fit optimistic or unstable. The run manifests do not pin an
+                        immutable model-weight revision, which limits exact runtime replay.
+                    </p>
+
+                    <p>
+                        These results support using fixed-label video alignment to draft boundaries for
+                        human review. The model did not outperform the seeded timing controls on temporal
+                        IoU, so this study does not establish that video adds timing accuracy beyond a
+                        task&rsquo;s ten-example prior. It also does not evaluate automatic label discovery. The
+                        <a href="#metrics">metric definitions</a> give the exact
+                        scoring rules.
+                    </p>
+
+                    <h2 id="visual-tokens">Native video reduces Qwen&rsquo;s visual-token workload</h2>
+
+                    <p>
+                        We compared the two frame formats using the pinned geometry of the official
+                        <a href="https://huggingface.co/Qwen/Qwen3.8-27B">Qwen3.8-27B</a>
+                        processor. For every trajectory, we derived both format counts from the same
+                        wrist-camera timestamps using the pinned processor geometry: two frames per
+                        second, at most 300 frames, resized to 224 pixels wide.
+                        The only difference was whether those frames became 5&times;4 contact sheets or
+                        one native video. The census covers all 2,062 held-out evaluation trajectories:
+                        757 from L5VEL and 1,305 from RH20T.
+                    </p>
+
+                    <figure class="figure">
+                        <div class="figure-frame" tabindex="0">
+                            <img src="../../../assets/img/blog/sbot-datasets/figure3.svg"
+                                alt="Left: paired held-out trajectories with contact-sheet visual tokens on the horizontal axis and native-video visual tokens on the vertical axis, both logarithmic; all L5VEL and RH20T points fall below the equal-token diagonal. Right: contact-sheet baselines normalized to 100 percent beside native-video bars for L5VEL, RH20T and both sets pooled."
+                                width="900" height="560" loading="lazy"
+                                style="display:block;width:100%;height:auto;min-width:700px">
+                        </div>
+                        <table class="visually-hidden">
+                            <caption>Aggregate values plotted in the right panel of Figure R7</caption>
+                            <thead><tr><th>Population</th><th>Trajectories</th><th>Contact-sheet visual tokens</th><th>Native-video visual tokens</th><th>Video relative to sheets</th><th>Reduction</th></tr></thead>
+                            <tbody>
+                                <tr><th>L5VEL</th><td>757</td><td>3,568,425</td><td>1,584,275</td><td>44.4%</td><td>55.6%</td></tr>
+                                <tr><th>RH20T</th><td>1,305</td><td>3,869,040</td><td>1,771,784</td><td>45.8%</td><td>54.2%</td></tr>
+                                <tr><th>Pooled (L5VEL + RH20T)</th><td>2,062</td><td>7,437,465</td><td>3,356,059</td><td>45.1%</td><td>54.9%</td></tr>
+                            </tbody>
+                        </table>
+                        <figcaption>
+                            Figure R7 &mdash; processor-expanded visual tokens for matched frame sets.
+                            Each point in the left panel is one held-out trajectory: contact-sheet
+                            tokens are on the horizontal axis and native-video tokens on the vertical
+                            axis, both logarithmic. The diagonal marks equal counts; all 2,062 points
+                            fall below it. The right panel places a native-video bar beside a
+                            contact-sheet baseline normalized to 100% for each population and labels
+                            both absolute totals. The ratio-of-sums reductions,
+                            <code>1 &minus; &Sigma;video / &Sigma;contact-sheet</code>, are 55.6% on
+                            L5VEL, 54.2% on RH20T and 54.9% pooled.
+                            <span class="figure-source">Qwen3.8-27B processor revision
+                            <code>1d4bf0f2</code>; complete held-out evaluation census;
+                            <a href="https://github.com/l5vel/lerobot-align/tree/main/evaluation/public_artifacts/frame_format_tokens/qwen38_27b/2026-09-09">rows, summary and validation</a>.</span>
+                        </figcaption>
+                    </figure>
+
+                    <p>
+                        We count visual tokens as
+                        <code>&Sigma; product(grid_thw) / merge_size&sup2;</code>, using
+                        <code>image_grid_thw</code> for the sheets and <code>video_grid_thw</code>
+                        for video. Qwen&rsquo;s official
+                        <a href="https://huggingface.co/Qwen/Qwen3.8-27B/blob/main/video_preprocessor_config.json">video processor configuration</a>
+                        uses 16-pixel spatial patches, merges them 2&times;2, and groups video frames
+                        in temporal pairs. Contact sheets also pay for a complete
+                        5&times;4 canvas when their last sheet is only partly filled. Together, these
+                        choices explain the reduction here; changing the sampling rate, resolution or
+                        sheet layout can change it. Qwen&rsquo;s model card documents native image and
+                        video input and configurable processor budgets. It does not itself claim that
+                        video is always cheaper than contact sheets.
+                    </p>
+
+                    <p>
+                        We checked the metadata-derived census against decoded pixels. Six examples at
+                        fixed short, median and long frame-count ranks had processor grids and visual
+                        placeholders that matched the census exactly; both representations also
+                        completed in 12 local Qwen3.8-27B requests. This validates the counting path and
+                        payload compatibility, not total cost or throughput. Hardware and run-manifest
+                        details are in the <a href="#reproducing">reproduction notes</a>.
+                    </p>
+
+                    <p>
+                        This is a visual-token result. It does not measure generated tokens, billing,
+                        latency or annotation accuracy, and native video adds timestamp text around its
+                        visual tokens. Figure&nbsp;R6 reports accuracy separately. We exclude server
+                        token telemetry because the available vLLM counters treated the two modalities
+                        inconsistently and therefore cannot support a cross-format comparison. The
+                        <a href="#reproducing">reproduction notes</a> describe the
+                        scripts, validation and limits.
+                    </p>
+
+                    <h2 id="reproducing">Reproducing the measurements</h2>
+
+                    <p>
+                        The public repository can rerun these protocols given authorized source data,
+                        prepared corpora and any required model endpoint. The archived model
+                        predictions and calibration fits behind Figure&nbsp;R6 are not included, so its
+                        published accuracy scores cannot be regenerated from the release alone.
+                        Figure&nbsp;R7&rsquo;s rows, summary and validation receipt are public. Its
+                        cross-format claim uses the official processor&rsquo;s expanded visual placeholders,
+                        not vLLM&rsquo;s modality-dependent server counters.
+                    </p>
+
+                    <ol>
+                        <li><strong>Matched-frame visual tokens.</strong> Figure&nbsp;R7 uses all
+                            trajectories in the final prepared evaluation splits. Run the census,
+                            decoded-media validation and plotter in this order:
+<pre><code>uv sync --locked --extra eval --extra serve
+export ALIGN_QWEN_REV=1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0
+export ALIGN_QWEN_PROCESSOR="$PWD/.cache/qwen38-processor-$ALIGN_QWEN_REV"
+uv run --no-sync hf download Qwen/Qwen3.8-27B \
+  config.json preprocessor_config.json video_preprocessor_config.json \
+  tokenizer_config.json tokenizer.json chat_template.jinja \
+  --revision "$ALIGN_QWEN_REV" --local-dir "$ALIGN_QWEN_PROCESSOR"
+
+uv run --no-sync python evaluation/scripts/measure_frame_format_tokens.py \
+  &lt;prepared_corpus_a&gt; &lt;prepared_corpus_b&gt; \
+  --processor "$ALIGN_QWEN_PROCESSOR" --local-files-only \
+  --rows-out rows.jsonl --summary-out summary.json
+
+uv run --no-sync python evaluation/scripts/validate_frame_format_tokens.py \
+  --rows rows.jsonl \
+  --corpus-root corpus_a=&lt;prepared_corpus_a&gt; \
+  --corpus-root corpus_b=&lt;prepared_corpus_b&gt; \
+  --processor "$ALIGN_QWEN_PROCESSOR" --local-files-only --pairs-per-corpus 3 \
+  --out validation.json
+
+uv run --no-sync python evaluation/scripts/measure_frame_format_tokens.py \
+  &lt;prepared_corpus_a&gt; &lt;prepared_corpus_b&gt; \
+  --processor "$ALIGN_QWEN_PROCESSOR" --local-files-only \
+  --rows-out rows.jsonl --summary-out summary.json \
+  --actual-pairs validation.json
+
+uv run --no-sync python evaluation/scripts/plot_frame_format_tokens.py \
+  --rows rows.jsonl --summary summary.json \
+  --svg figure3.svg --png figure3.png</code></pre>
+                            The census reproduces the 2&nbsp;fps, 300-frame, 224-pixel evaluation
+                            geometry without decoding pixels, then verifies the population against
+                            the prepared split manifests. The validator selects fixed length ranks,
+                            decodes the real frames and requires its <code>image_grid_thw</code>,
+                            <code>video_grid_thw</code> and input placeholder counts to match. Add
+                            <code>--api-base &lt;endpoint&gt; --model &lt;served_id&gt; --gpu-index
+                            &lt;index&gt;</code> to repeat the live-server check. The server should use
+                            <code>--media-io-kwargs
+                            '{&quot;video&quot;: {&quot;num_frames&quot;: -1}}'</code> so it does not cap
+                            a clip at 32 frames. For a one-episode processor check, run
+                            <code>uv run --no-sync python -m lerobot_align.diagnostics.probe_frame_tokens
+                            &lt;dataset_root&gt; --episode 0 --camera observation.images.wrist</code>.
+                            None of these cross-format calculations uses
+                            <code>usage.prompt_tokens</code>. The published run used processor revision
+                            <code>1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0</code>. For an exact
+                            rerun, use the explicit six-file download above and verify the config hashes
+                            recorded in <code>summary.json</code>.</li>
+                        <li><strong>Paired per-episode wall-clock.</strong>
+                            <code>python -m lerobot_align.diagnostics.eval_align_batch
+                            &lt;dataset_root&gt; --formats contact_sheet video --video-fallback error
+                            --camera observation.images.wrist --api-base &lt;endpoint&gt;
+                            --model &lt;served id&gt; --out ab.json</code>. Both formats run
+                            back to back within each episode. The shared frame provider caches decoded
+                            frames, and this command runs contact sheets first, so video can benefit
+                            from a warmer local decode cache. Warm both formats or counterbalance
+                            their order before interpreting the timing difference.
+                            Pass <code>--video-fallback error</code>: the default silently scores a
+                            failed video encode as a contact-sheet run. The recorded
+                            <code>elapsed_s</code> is end-to-end module time including local frame
+                            decode and H.264 encode, so it charges client-side encoding to the video
+                            configuration.</li>
+                        <li><strong>End-to-end job telemetry.</strong>
+                            <code>python evaluation/scripts/run_arm.py --dataset &lt;component&gt;
+                            --source-root &lt;dataset_root&gt; --work-dir &lt;scratch_directory&gt;
+                            --arm align_video__udef__wrist --arms-config evaluation/configs/arms.yaml
+                            --base-url &lt;endpoint&gt; --model-id &lt;served_id&gt; --out video-job.json</code>,
+                            then the same required arguments with
+                            <code>--arm baseline_upstream__udef__wrist --out upstream-job.json</code>.
+                            Prepare the source root as documented in
+                            <code>evaluation/REPRODUCING.md</code>, and use the same
+                            <code>--episodes &lt;split.json&gt;</code> for both configurations when selecting a subset. The
+                            output carries <code>prompt_tokens</code>, <code>generation_tokens</code>,
+                            <code>total_tokens</code>, <code>elapsed_seconds</code> and
+                            <code>n_episodes_predicted</code>. The token fields are vLLM server
+                            counters: compare them only between runs using the same visual format.
+                            They do not establish the relative token cost of contact sheets and video.
+                            Each job must hold its replica exclusively for the whole run &mdash;
+                            otherwise the counter delta includes somebody else's traffic too.</li>
+                        <li><strong>Accuracy.</strong> The metric library, the nine configuration definitions,
+                            the eight pre-registered contrasts, the scorer and the bootstrap
+                            aggregation are public under <code>evaluation/</code>, and
+                            <code>evaluation/REPRODUCING.md</code> documents the corpus preparation
+                            end to end. You must supply authorized reference boundaries, prepared
+                            media and a model endpoint. Replaying the archived aggregate values also
+                            requires the unpublished historical predictions and fits.</li>
+                    </ol>
+
+
+                    <p style="margin-top:2.5rem">
+                        <a href="../index.html">&larr; Back to sBot-Datasets</a>
+                    </p>
+</article>
+
+                <!-- ============ CONTACT ============ -->
+                <section class="contact" id="contact">
+                    <div class="contact-card">
+                        <h2 class="contact-title">Working with robot data?</h2>
+                        <p class="contact-text">
+                            Tell us what you&rsquo;re building with the data, or share an episode
+                            that the annotation tool found difficult.
+                        </p>
+                        <a class="btn btn-primary" href="mailto:support@l5vel.com?subject=sBot-Datasets">
+                            support@l5vel.com
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-brand">L5VEL</p>
+            <p class="footer-text">
+                College Station, Texas &middot;
+                <a href="mailto:support@l5vel.com">support@l5vel.com</a>
+            </p>
+            <p class="footer-text">
+                &copy; <span id="year">2026</span> L5VEL. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="../../../assets/js/site.js" defer></script>
+</body>
+</html>
