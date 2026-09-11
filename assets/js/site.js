@@ -14,6 +14,52 @@
         nav.classList.add('is-scrolled');
     }
 
+    /* Enhance the visible navigation with a collapsible menu on small screens. */
+    var navigation = nav && nav.querySelector('nav');
+    if (navigation) {
+        var menuButton = document.createElement('button');
+        var mobileScreen = window.matchMedia('(max-width: 720px)');
+        navigation.id = navigation.id || 'siteNavigation';
+        menuButton.type = 'button';
+        menuButton.className = 'nav-toggle';
+        menuButton.textContent = 'Menu';
+        menuButton.setAttribute('aria-controls', navigation.id);
+        menuButton.setAttribute('aria-expanded', 'false');
+        navigation.parentElement.insertBefore(menuButton, navigation);
+        nav.classList.add('has-mobile-menu');
+
+        function setMenuOpen(open, returnFocus) {
+            nav.classList.toggle('is-menu-open', open);
+            menuButton.setAttribute('aria-expanded', String(open));
+            menuButton.textContent = open ? 'Close menu' : 'Menu';
+            if (returnFocus) {
+                menuButton.focus();
+            }
+        }
+
+        menuButton.addEventListener('click', function () {
+            setMenuOpen(menuButton.getAttribute('aria-expanded') !== 'true');
+        });
+        navigation.addEventListener('click', function (event) {
+            if (mobileScreen.matches && event.target.closest('a')) {
+                setMenuOpen(false, true);
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && nav.classList.contains('is-menu-open')) {
+                setMenuOpen(false, true);
+            }
+        });
+        document.addEventListener('click', function (event) {
+            if (nav.classList.contains('is-menu-open') && !nav.contains(event.target)) {
+                setMenuOpen(false, navigation.contains(document.activeElement));
+            }
+        });
+        mobileScreen.addEventListener('change', function () {
+            setMenuOpen(false, mobileScreen.matches && navigation.contains(document.activeElement));
+        });
+    }
+
     /* Respect reduced-motion: don't loop the hero behind the headline. */
     var heroVideo = document.getElementById('heroVideo');
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

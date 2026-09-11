@@ -250,6 +250,19 @@ video {
     background: var(--teal-500);
 }
 
+.nav-toggle {
+    display: none;
+    min-height: 44px;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 /* ============================================
    HERO
    ============================================ */
@@ -289,7 +302,8 @@ video {
     position: relative;
     z-index: 2;
     text-align: center;
-    padding: 2rem;
+    padding: calc(var(--nav-h) + 2rem) 2rem 8rem;
+    width: 100%;
     max-width: 820px;
 }
 
@@ -498,7 +512,7 @@ video {
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
     gap: 1.5rem;
 }
 
@@ -1316,19 +1330,82 @@ footer {
 }
 
 @media (max-width: 720px) {
-    .nav-inner {
-        padding: 0 1rem;
+    /* Without JavaScript, keep every link visible in a wrapping header. */
+    .site-nav {
+        position: sticky;
+        height: auto;
+        min-height: var(--nav-h);
+        background: var(--slate-950);
     }
 
-    /* Section links collapse; the contact CTA stays reachable. */
-    .nav-links li:not(.nav-cta-item) {
+    .nav-inner {
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .nav-inner nav {
+        flex-basis: 100%;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .nav-link {
+        display: block;
+        min-height: 44px;
+    }
+
+    .nav-link.nav-cta {
+        margin-left: 0;
+    }
+
+    /* The shared script adds an accessible menu on every page. */
+    .site-nav.has-mobile-menu {
+        position: fixed;
+        height: var(--nav-h);
+    }
+
+    .has-mobile-menu .nav-inner {
+        padding: 0 1rem;
+        flex-wrap: nowrap;
+    }
+
+    .has-mobile-menu .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .has-mobile-menu .nav-inner nav {
         display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 0.75rem 1rem;
+        max-height: calc(100vh - var(--nav-h));
+        max-height: calc(100svh - var(--nav-h));
+        overflow-y: auto;
+        background: var(--slate-950);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .has-mobile-menu.is-menu-open .nav-inner nav {
+        display: block;
+    }
+
+    .has-mobile-menu .nav-links {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 
 @media (max-width: 640px) {
     .hero-content {
-        padding: 1.5rem;
+        padding: calc(var(--nav-h) + 1.5rem) 1.5rem 8rem;
     }
 
     .hero-cta {
