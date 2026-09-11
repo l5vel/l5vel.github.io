@@ -45,4 +45,31 @@
     if (year) {
         year.textContent = new Date().getFullYear();
     }
+
+    /* Direct links into a reference disclosure reveal the requested content. */
+    function revealReferenceTarget() {
+        var id;
+        try {
+            id = decodeURIComponent(window.location.hash.slice(1));
+        } catch (error) {
+            return;
+        }
+        var target = document.getElementById(id);
+        var parent = target;
+        var opened = false;
+        while (parent) {
+            if (parent.tagName === 'DETAILS' && parent.classList.contains('reference-details')) {
+                if (!parent.open) {
+                    parent.open = true;
+                    opened = true;
+                }
+            }
+            parent = parent.parentElement;
+        }
+        if (opened) {
+            target.scrollIntoView();
+        }
+    }
+    revealReferenceTarget();
+    window.addEventListener('hashchange', revealReferenceTarget);
 }());

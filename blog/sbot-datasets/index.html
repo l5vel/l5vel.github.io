@@ -113,7 +113,7 @@
                             <b>Figure 1 &mdash; one task, two wiping passes.</b>
                             Episode 104 of <code>base4-clean-table</code>. The captions follow the
                             released subtask timeline.
-                            <a href="reference/index.html#language-storage">Source and annotation details</a>.
+                            <a href="reference/index.html#cleaning-source">Source and annotation details</a>.
                         </figcaption>
                     </figure>
 
@@ -217,7 +217,7 @@
                         language data without downloading the videos. For the croissant dataset,
                         that is about 34&nbsp;MB instead of 2.5&nbsp;GB;
                         the <a href="reference/index.html#access">download and parsing example</a>
-                        prints the subtask start times for each episode.
+                        prints one episode&rsquo;s subtask start times.
                     </p>
 
                     <p id="language">
@@ -227,7 +227,7 @@
                         the original labels. We have not independently measured annotation agreement
                         or downstream training gains for this release. Use the
                         <a href="reference/index.html#provenance">annotation provenance</a> and
-                        <a href="reference/index.html#caveats">known limitations</a> to choose and
+                        <a href="reference/index.html#caveats">practical data notes</a> to choose and
                         check the data for your experiment.
                     </p>
 
@@ -309,7 +309,7 @@
                         scores at least as high as the best model configuration. That limits what
                         we can conclude about the model&rsquo;s added value: for a repetitive task
                         with known steps, compare it with a timing template as well as reviewing
-                        its output. The <a href="reference/index.html#alignment-study">full results</a>
+                        its output. The <a href="evaluation/index.html#alignment-study">full results</a>
                         include the charts, uncertainty estimates and study limitations.
                     </p>
 
@@ -322,7 +322,7 @@
                         uses two frames per second, a 300-frame cap and frames resized to 224 pixels
                         wide. It suggests a smaller visual input workload under those settings;
                         it does not measure billing, latency or total token savings. The
-                        <a href="reference/index.html#visual-tokens">token comparison</a> explains
+                        <a href="evaluation/index.html#visual-tokens">token comparison</a> explains
                         the count and links to the public measurements.
                     </p>
 
@@ -347,7 +347,7 @@
                             Each point compares one recording in both formats. Native video used
                             fewer visual tokens in every recording, with a 54.9% reduction overall
                             under the Qwen3.8-27B settings above.
-                            <a href="reference/index.html#visual-tokens">Method and source data</a>.
+                            <a href="evaluation/index.html#visual-tokens">Method and source data</a>.
                         </figcaption>
                     </figure>
 

@@ -1919,6 +1919,72 @@ footer {
     color: var(--slate-500);
 }
 
+/* ---- reference guides and expandable detail ---- */
+.reference-guide [id] {
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.reference-details {
+    margin: 1.25rem 0;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--slate-200);
+    border-radius: 12px;
+    background: white;
+    scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.reference-details > summary {
+    cursor: pointer;
+    color: var(--slate-900);
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.reference-details > summary::marker {
+    color: var(--teal-700);
+}
+
+.reference-details > summary:focus-visible {
+    outline: 3px solid var(--teal-500);
+    outline-offset: 5px;
+    border-radius: 3px;
+}
+
+.reference-details[open] > summary {
+    margin-bottom: 1rem;
+}
+
+.reference-details > :last-child {
+    margin-bottom: 0;
+}
+
+.reference-guide .data-table-wrap {
+    margin-bottom: 1.125rem;
+}
+
+.data-table.reference-table {
+    min-width: 0;
+}
+
+.reference-table th,
+.reference-table td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.reference-table code {
+    overflow-wrap: anywhere;
+}
+
+.reference-guide .toc {
+    margin-top: 1rem;
+}
+
+.reference-guide .toc p:last-child {
+    margin: 1rem 0 0;
+    font-size: 0.9375rem;
+}
+
 /* ---- dataset detail cards ---- */
 .ds-grid {
     display: grid;

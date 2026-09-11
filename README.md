@@ -13,6 +13,7 @@ mpep/index.html         A-MPEP product page  -> l5vel.com/mpep/
 blog/index.html         Blogs listing        -> l5vel.com/blog/
 blog/<slug>/index.html  one post per folder  -> l5vel.com/blog/<slug>/
 blog/<slug>/reference/  optional detail page -> l5vel.com/blog/<slug>/reference/
+blog/<slug>/evaluation/ evaluation details  -> l5vel.com/blog/<slug>/evaluation/
 404.html                not-found page
 assets/
   css/site.css          all styles, for every page
@@ -86,21 +87,26 @@ as the section.
 
 ### sBot-Datasets
 
-Two pages, deliberately split:
+Three pages, each serving a different reading task:
 
 - `blog/sbot-datasets/index.html` — the post. Start with the table-cleaning
   episode, explain what readers can do with the data, show the generation,
   alignment and import workflows, summarize the evidence, and help readers try
   one episode. Keep provenance and the limits of the evaluation visible.
-- `blog/sbot-datasets/reference/index.html` — the detail. Per-dataset table,
-  format specification, camera layout, annotation variation, access recipes,
-  full evaluation results and charts, metric definitions and reproduction.
+- `blog/sbot-datasets/reference/index.html` — the dataset guide. Start by loading
+  one episode, then help readers choose a task, understand its files and fields,
+  parse subtasks and prepare an experiment. Use the croissant dataset throughout
+  the walkthrough. Keep detailed statistics and provenance receipts expandable.
+- `blog/sbot-datasets/evaluation/index.html` — the timing study and token count.
+  Lead with scope, findings and plots. Follow with metric definitions, calibration,
+  limitations and reproduction requirements. Put detailed procedures in disclosures.
 
 Lead with a concrete use before explaining a feature or implementation detail.
-The visualizer is not part of this release. Detailed methods belong in the
-reference so the main post stays focused on using the data and annotation tool.
+The visualizer is not part of this release. Detailed study methods belong in the
+evaluation page so the dataset guide stays focused on using the data.
 Keep the token comparison plot beside its takeaway in the post (Figure 2);
-the reference repeats it as Figure R7 with the full methodology and source data.
+the evaluation page repeats it as Figure E2 with the methodology and source data.
+The reference page keeps links at the old evaluation anchors for existing bookmarks.
 
 New datasets should change the reference page and, at most, one summary
 sentence in the post. If the post starts listing datasets again, it has drifted.
@@ -133,31 +139,32 @@ evaluation baseline is real upstream code, `lerobot` 0.6.1 invoked as
 every arm; task descriptions, paraphrases and memory were never scored against
 reference annotations. Do not generalise any result to them or to "dataset quality".
 The headline run is fixed-label alignment (labels given, timing predicted,
-within-tool). Figure R7 compares contact-sheet and native-video visual tokens on
+within-tool). Figure E2 compares contact-sheet and native-video visual tokens on
 the same held-out fixed-label population. It is not a comparison with upstream.
 
-The runtime table reports a separate run of the tool over the same source
-recordings, published to a scratch namespace, purely to measure throughput.
+Keep runtime measurements and server token telemetry separate from the
+processor-based visual-token count. The evaluation page explains the inputs
+and limits for each reproduction recipe.
 
 **Every number is traceable, and most were computed rather than quoted.**
 Dataset statistics come from each repository's `meta/info.json`,
 `meta/tasks.parquet` and `meta/episodes/*.parquet`; the annotation statistics
 come from parsing the `language_persistent` column of every data shard.
 Accuracy figures come from L5VEL's internal alignment study; the page says so
-where it uses them. Figure R7's processor-token rows, summary, validation and plot
+where it uses them. Figure E2's processor-token rows, summary, validation and plot
 are under `evaluation/public_artifacts/frame_format_tokens/` in the public
 `lerobot-align` repository. The pages distinguish measured from derived figures
 with `.tag--measured` / `.tag--derived` / `.tag--absent`.
 
-Figures are numbered `1..n` in the post and `R1..Rn` in the reference, so a
-cross-page mention is never ambiguous.
+Figures use `1..n` in the post, `R1..Rn` in the dataset guide, and `E1..En` in
+the evaluation page. Keep captions and cross-page links aligned when moving them.
 
 **Claims on these pages are deliberately hedged**, and the hedging is load
 bearing: "a *declared* 50 Hz", "subtasks in 1,497 of 1,499 episodes", "not
 established" rather than "no effect", results tied to the corpus and denominator
 they came from. Do not tighten this prose into stronger claims. In particular,
 **do not revive the old cross-format percentage**. Its arithmetic used total
-vLLM server tokens despite being labelled prompt tokens, and that server counter counted the modalities inconsistently. Figure R7 now
+vLLM server tokens despite being labelled prompt tokens, and that server counter counted the modalities inconsistently. Figure E2 now
 uses a separate matched-frame census of processor-expanded visual tokens from
 `image_grid_thw` and `video_grid_thw`: 55.60% fewer on 757 L5VEL trajectories
 and 54.21% fewer on 1,305 RH20T trajectories. Keep the claim limited to visual
