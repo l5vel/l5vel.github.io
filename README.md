@@ -17,7 +17,7 @@ blog/<slug>/evaluation/ evaluation details  -> l5vel.com/blog/<slug>/evaluation/
 404.html                not-found page
 assets/
   css/site.css          all styles, for every page
-  js/site.js            nav scroll state, video coordination (progressive enhancement)
+  js/site.js            mobile menu, nav scroll state, video coordination, disclosure links
   video/hero.mp4        hero background loop (silent)
   video/vision/         Unreal Engine concept renders, 16:9, silent
   video/progress/       real S-bot development footage, 9:16, with audio
@@ -54,31 +54,60 @@ deliberately excluded. Cite the report before adding a figure.
 
 ## Working on it
 
-Open `index.html` directly, or serve the folder so root-relative paths resolve:
+From the repository root, start a local preview server:
 
 ```sh
 python3 -m http.server 8000
 ```
 
+Then open <http://localhost:8000/>. There is no build or install step.
+
+### Navigation and responsive checks
+
+At widths of 720 px and below, the shared script adds a **Menu** button to the
+header. It exposes every navigation link and closes on Escape, link activation,
+an outside click or a change across the breakpoint. Escape returns focus to the
+button. Without JavaScript, the links remain visible in a wrapping header.
+
+New pages should reuse an existing header (`#siteNav`, `.nav-inner`, `nav` and
+`.nav-links`) and load both shared assets. The script creates the menu button;
+keep the navigation links in the HTML.
+
+After changing shared styles or navigation, check the home, product and blog
+pages in a browser:
+
+- Try 320 px and 390 px widths, both sides of the menu breakpoint (720/721 px),
+  a desktop width and a short landscape viewport.
+- Open the menu with the keyboard, follow a link, press Escape and click outside.
+  Resize with the menu open and check that the desktop links return.
+- Check that the home page has no horizontal overflow and that both hero buttons
+  stay clear of the header and scroll prompt.
+- Disable JavaScript and confirm all navigation links remain accessible.
+
 ## Adding a video
 
-Never commit footage straight from a camera or Unreal — it is typically 5–20×
-larger than it needs to be and lacks the `faststart` flag, which forces
-browsers to download the entire file before playback starts.
+Re-encode camera footage and Unreal renders before committing them. The helper
+compresses the video and enables `faststart`, placing MP4 metadata at the front
+so playback can begin before the download finishes. It requires `ffmpeg` and
+`ffprobe`.
 
 1. Drop the source file in `raw/` (git-ignored).
-2. Run `tools/encode-media.sh raw/clip.mp4 vision|progress <slug>`.
+2. Run, for example, `tools/encode-media.sh raw/clip.mp4 blog new-clip`.
 
 That writes `assets/video/<section>/<slug>.mp4` and a matching poster frame in
 `assets/posters/<section>/<slug>.jpg`, then prints the markup to paste in.
-Silent audio tracks are dropped automatically.
+Use `vision`, `progress`, `mpep` or `blog` for the corresponding section; `hero`
+takes no slug and writes `assets/video/hero.mp4` and `assets/posters/hero.jpg`.
+Silent audio tracks are dropped automatically. Adjust the printed asset paths
+for nested pages. WebVTT tracks are authored separately; the helper does not
+generate captions.
 
 ## The blog
 
 `blog/index.html` lists posts; each post is its own folder with an `index.html`,
 so the URL is `l5vel.com/blog/<slug>/`. There is no feed and no post index file —
-adding a post means writing the page and adding one `<li class="post-card">` to
-the listing.
+adding a post means writing the page and adding an `<li>` containing an
+`<article class="post-card">` to the listing.
 
 Posts reuse the shared `.article` styles in `site.css`. Charts are either inline
 SVG or generated SVG assets; neither needs client-side JavaScript. Video clips
@@ -116,15 +145,17 @@ have mixed provenance. Publication-run receipts mark 5,201 spans in 895 episodes
 as imported reference annotations and 1,681 spans in 602 episodes as generated;
 two imported episodes have empty tracks. Four repositories are entirely
 imported-reference, five are generated, and `base4-mobile-door` mixes 150
-imported-reference with 50 generated episodes. The receipts do not prove who
-authored the imported files and do not identify the generation model or revision.
+imported-reference with 50 generated episodes. The publication receipts alone
+do not identify the generation model; component run logs name Qwen3.8-27B but
+do not pin an immutable model revision. Neither proves who authored the imported
+files.
 The pipeline targeted ten task paraphrases; 1,482 episodes retain ten alternatives
 and 17 retain nine, plus the canonical task. `plan` rows are deterministically
 derived from the published subtask sequence. Do not call the collection
-"human-annotated" or attribute generation to a specific model without a durable
-run record. Corpus A's evaluation uses imported source references only and
-excludes the generated collection components. Check figure captions, table
-captions, SVG `<desc>` and `<meta>` tags when updating this claim.
+"human-annotated". Keep model attribution tied to the component logs and retain
+the missing-revision caveat. Corpus A's evaluation uses imported source references
+only and excludes the generated collection components. Check figure captions,
+table captions, SVG `<desc>` and `<meta>` tags when updating this claim.
 
 **Credit upstream.** `lerobot-align` is a modified and extended version of
 LeRobot's steerable annotation pipeline (`lerobot-annotate`,
@@ -153,8 +184,8 @@ come from parsing the `language_persistent` column of every data shard.
 Accuracy figures come from L5VEL's internal alignment study; the page says so
 where it uses them. Figure E2's processor-token rows, summary, validation and plot
 are under `evaluation/public_artifacts/frame_format_tokens/` in the public
-`lerobot-align` repository. The pages distinguish measured from derived figures
-with `.tag--measured` / `.tag--derived` / `.tag--absent`.
+`lerobot-align` repository. State each figure's source, scope and limitations in
+its caption or nearby text, including whether it was measured or derived.
 
 Figures use `1..n` in the post, `R1..Rn` in the dataset guide, and `E1..En` in
 the evaluation page. Keep captions and cross-page links aligned when moving them.
